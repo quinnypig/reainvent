@@ -27,6 +27,8 @@ jobs:
       - name: Refresh catalog
         if: github.event_name != 'push'
         run: node scripts/update-catalog.mjs
+        env:
+          PANGRAM_API_KEY: ${{ secrets.PANGRAM_API_KEY }}
       - name: Commit catalog changes
         if: github.event_name != 'push'
         run: |

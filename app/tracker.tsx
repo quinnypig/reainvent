@@ -23,6 +23,7 @@ const isAiFlagged = (session: Session) => session.pangram?.label === "AI" || ses
 
 function SessionCard({ session, index }: { session: Session; index: number }) {
   const [open, setOpen] = useState(false);
+  const aiScore = session.pangram?.ai == null ? null : Math.round(session.pangram.ai * 100);
   return (
     <article className={`session-row ${open ? "is-open" : ""}`}>
       <div className="session-number">{String(index + 1).padStart(2, "0")}</div>
@@ -37,6 +38,10 @@ function SessionCard({ session, index }: { session: Session; index: number }) {
           {session.topics.slice(0, 1).map((topic) => <span key={topic}>{topic}</span>)}
         </span>
       </button>
+      <div className={`ai-verdict ${session.pangram?.label?.toLowerCase().replace(" ", "-") || "unscored"}`}>
+        <strong>{aiScore == null ? "—" : `${aiScore}%`}</strong>
+        <span>{session.pangram?.label || "unscored"}</span>
+      </div>
       <button className="open-button" onClick={() => setOpen(!open)} aria-label={`${open ? "Close" : "Open"} ${session.code}`}>↗</button>
       {open && (
         <div className="session-detail">
@@ -65,6 +70,7 @@ export default function Tracker() {
   const [level, setLevel] = useState("");
   const [format, setFormat] = useState("");
   const [authorship, setAuthorship] = useState("");
+  const [sort, setSort] = useState("ai-desc");
   const [limit, setLimit] = useState(80);
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -88,15 +94,23 @@ export default function Tracker() {
   } : { topics: [], levels: [], formats: [] }, [data]);
   const sessions = useMemo(() => {
     const needle = query.trim().toLowerCase();
-    return source.filter((session) =>
+    const filtered = source.filter((session) =>
       (!topic || session.topics.includes(topic)) && (!level || session.level === level) && (!format || session.type === format) &&
-      (!authorship || (authorship === "flagged") === isAiFlagged(session)) &&
+      (!authorship || (authorship === "signal" ? isAiFlagged(session) : session.pangram?.label === authorship)) &&
       (!needle || [session.code, session.title, session.abstract, ...session.topics, ...session.services].join(" ").toLowerCase().includes(needle)),
     );
-  }, [source, query, topic, level, format, authorship]);
+    return filtered.sort((a, b) => sort === "code" ? a.code.localeCompare(b.code) : sort === "ai-asc" ? (a.pangram?.ai ?? -1) - (b.pangram?.ai ?? -1) : (b.pangram?.ai ?? -1) - (a.pangram?.ai ?? -1));
+  }, [source, query, topic, level, format, authorship, sort]);
   const selectView = (next: View) => { setView(next); setLimit(80); window.location.hash = next === "sessions" ? "index" : next; };
-  const clearFilters = () => { setQuery(""); setTopic(""); setLevel(""); setFormat(""); setAuthorship(""); };
+  const clearFilters = () => { setQuery(""); setTopic(""); setLevel(""); setFormat(""); setAuthorship(""); setSort("ai-desc"); };
   const counts = data ? { sessions: data.sessions.length, new: data.new.length, removed: data.removed.length, activity: data.events.length } : { sessions: 0, new: 0, removed: 0, activity: 0 };
+  const aiStats = data ? {
+    ai: data.sessions.filter((s) => s.pangram?.label === "AI").length,
+    mixed: data.sessions.filter((s) => s.pangram?.label === "Mixed").length,
+    human: data.sessions.filter((s) => s.pangram?.label === "Human").length,
+    signal: data.sessions.filter(isAiFlagged).length,
+  } : null;
+  const aiSignalPercent = aiStats && data ? Math.round(aiStats.signal / data.sessions.length * 100) : null;
 
   return (
     <main>
@@ -105,19 +119,39 @@ export default function Tracker() {
         <div className="masthead-meta"><span>AWS re:Invent 2026</span><span>Las Vegas · Nov 30—Dec 4</span></div>
       </header>
       <section className="hero" id="top">
-        <div className="eyebrow"><span>LIVE INDEX</span> The catalog, minus the guesswork</div>
-        <h1>What changed at<br />re:Invent?</h1>
-        <p className="dek">A living record of every session AWS adds, edits, and quietly pulls from the 2026 catalog.</p>
+        <div className="eyebrow"><span>PANGRAM AUDIT</span> Every published session description, scored</div>
+        <h1>AWS’s catalog is<br /><em>{aiSignalPercent ?? "—"}% AI.</em></h1>
+        <p className="dek">Pangram flags {aiStats?.signal.toLocaleString() ?? "—"} of {data?.sessions.length.toLocaleString() ?? "—"} re:Invent session descriptions as AI-written or AI-assisted. We brought receipts.</p>
         {data && <div className="dateline"><span className="pulse" /> Last checked {fmtTime(data.stats.last_scrape)}</div>}
       </section>
-      <section className="scoreboard" aria-label="Catalog summary">
-        <button onClick={() => selectView("sessions")}><strong>{data?.stats.total.toLocaleString() ?? "—"}</strong><span>live sessions</span></button>
-        <button className="positive" onClick={() => selectView("new")}><strong>+{data?.stats.new_14d ?? "—"}</strong><span>added in 14 days</span></button>
-        <button className="negative" onClick={() => selectView("removed")}><strong>{data?.stats.removed ?? "—"}</strong><span>pulled so far</span></button>
-        <button onClick={() => selectView("activity")}><strong>{data?.sessions.filter((s) => s.changed_recently).length ?? "—"}</strong><span>edited this week</span></button>
+      <section className="scoreboard ai-scoreboard" aria-label="Pangram authorship results">
+        <button className="ai-total" onClick={() => { selectView("sessions"); setAuthorship("signal"); }}><strong>{aiSignalPercent ?? "—"}%</strong><span>AI signal · AI + mixed</span></button>
+        <button onClick={() => { selectView("sessions"); setAuthorship("AI"); }}><strong>{aiStats?.ai.toLocaleString() ?? "—"}</strong><span>classified AI</span></button>
+        <button onClick={() => { selectView("sessions"); setAuthorship("Mixed"); }}><strong>{aiStats?.mixed.toLocaleString() ?? "—"}</strong><span>classified mixed</span></button>
+        <button className="human-total" onClick={() => { selectView("sessions"); setAuthorship("Human"); }}><strong>{aiStats?.human.toLocaleString() ?? "—"}</strong><span>classified human</span></button>
+      </section>
+      <section className="receipts" aria-labelledby="receipts-title">
+        <div className="receipts-copy">
+          <span className="section-kicker">01 / THE RECEIPTS</span>
+          <h2 id="receipts-title">The humans were<br />outnumbered.</h2>
+          <p>For every description Pangram classifies as Human, it flags 5.5 with an AI signal. Automate everything—even describing the talks about automation.</p>
+        </div>
+        <div className="distribution" aria-label="Pangram classification distribution">
+          <div className="distribution-bar">
+            <span className="bar-ai" style={{ width: `${data ? aiStats!.ai / data.sessions.length * 100 : 0}%` }} />
+            <span className="bar-mixed" style={{ width: `${data ? aiStats!.mixed / data.sessions.length * 100 : 0}%` }} />
+            <span className="bar-human" style={{ width: `${data ? aiStats!.human / data.sessions.length * 100 : 0}%` }} />
+          </div>
+          <div className="distribution-key">
+            <button onClick={() => { selectView("sessions"); setAuthorship("AI"); }}><i className="key-ai" /><span>AI</span><strong>{aiStats?.ai ?? "—"}<small>76.6%</small></strong></button>
+            <button onClick={() => { selectView("sessions"); setAuthorship("Mixed"); }}><i className="key-mixed" /><span>Mixed</span><strong>{aiStats?.mixed ?? "—"}<small>8.0%</small></strong></button>
+            <button onClick={() => { selectView("sessions"); setAuthorship("Human"); }}><i className="key-human" /><span>Human</span><strong>{aiStats?.human ?? "—"}<small>15.3%</small></strong></button>
+          </div>
+          <p className="method"><b>How this works:</b> Pangram 4 scores each title and abstract. Changed descriptions are rescored; results are probabilistic signals, not proof of authorship. All {data?.sessions.length.toLocaleString() ?? "—"} active sessions currently have a verdict.</p>
+        </div>
       </section>
       <section className="catalog" id="index">
-        <div className="section-heading"><div><span className="section-kicker">01 / THE INDEX</span><h2>Follow the catalog</h2></div><p>Search the full index, inspect recent arrivals, and see exactly what moved.</p></div>
+        <div className="section-heading"><div><span className="section-kicker">02 / THE INDEX</span><h2>See every score</h2></div><p>{data?.stats.total.toLocaleString() ?? "—"} live sessions · {data?.stats.new_14d ?? "—"} new in 14 days · {data?.stats.removed ?? "—"} pulled</p></div>
         <nav className="view-tabs" aria-label="Catalog views">
           {views.map((item) => <button key={item.id} className={view === item.id ? "active" : ""} onClick={() => selectView(item.id)}>{item.label}<sup>{counts[item.id]}</sup></button>)}
         </nav>
@@ -127,8 +161,9 @@ export default function Tracker() {
             <select aria-label="Filter by topic" value={topic} onChange={(e) => setTopic(e.target.value)}><option value="">All topics</option>{filterOptions.topics.map((x) => <option key={x}>{x}</option>)}</select>
             <select aria-label="Filter by level" value={level} onChange={(e) => setLevel(e.target.value)}><option value="">All levels</option>{filterOptions.levels.map((x) => <option key={x}>{x}</option>)}</select>
             <select aria-label="Filter by format" value={format} onChange={(e) => setFormat(e.target.value)}><option value="">All formats</option>{filterOptions.formats.map((x) => <option key={x}>{x}</option>)}</select>
-            <select aria-label="Filter by authorship signal" value={authorship} onChange={(e) => setAuthorship(e.target.value)}><option value="">Any authorship</option><option value="flagged">AI signal</option><option value="unflagged">No AI signal</option></select>
-            {(query || topic || level || format || authorship) && <button className="clear" onClick={clearFilters}>Clear all</button>}
+            <select aria-label="Filter by authorship signal" value={authorship} onChange={(e) => setAuthorship(e.target.value)}><option value="">Any authorship</option><option value="signal">AI signal</option><option value="AI">AI</option><option value="Mixed">Mixed</option><option value="Human">Human</option></select>
+            <select aria-label="Sort sessions" value={sort} onChange={(e) => setSort(e.target.value)}><option value="ai-desc">AI score: high to low</option><option value="ai-asc">AI score: low to high</option><option value="code">Session code</option></select>
+            {(query || topic || level || format || authorship || sort !== "ai-desc") && <button className="clear" onClick={clearFilters}>Clear all</button>}
           </div>
           <div className="results-meta"><span>{sessions.length.toLocaleString()} {sessions.length === 1 ? "session" : "sessions"}</span><span>{view === "new" ? "ADDED IN THE LAST 14 DAYS" : view === "removed" ? "CONFIRMED AFTER TWO CHECKS" : "UPDATED EVERY 30 MINUTES"}</span></div>
           <div className="session-list">

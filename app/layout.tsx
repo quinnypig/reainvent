@@ -8,19 +8,19 @@ const display = Instrument_Serif({ variable: "--font-display", subsets: ["latin"
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
-  title: "Catalog Watch — AWS re:Invent 2026",
-  description: "Every session AWS adds, edits, and removes from the re:Invent 2026 catalog.",
+  title: "85% AI — Catalog Watch for AWS re:Invent 2026",
+  description: "Pangram flags 85% of AWS re:Invent 2026 session descriptions for AI involvement. See every score, addition, edit, and removal.",
   openGraph: {
-    title: "What changed at re:Invent?",
-    description: "A living record of every session AWS adds, edits, and quietly pulls from the 2026 catalog.",
-    images: [{ url: "/og.png", width: 1728, height: 912, alt: "Catalog Watch — What changed at re:Invent?" }],
+    title: "AWS’s re:Invent catalog is 85% AI",
+    description: "Every one of the 1,121 session descriptions, scored by Pangram—with the catalog history attached.",
+    images: [{ url: "/og-ai.png", width: 1728, height: 912, alt: "Catalog Watch — AWS’s catalog is 85% AI" }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "What changed at re:Invent?",
-    description: "The live AWS re:Invent 2026 session index.",
-    images: ["/og.png"],
+    title: "AWS’s re:Invent catalog is 85% AI",
+    description: "Every session description, scored by Pangram.",
+    images: ["/og-ai.png"],
   },
 };
 
