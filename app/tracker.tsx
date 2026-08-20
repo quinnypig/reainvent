@@ -115,13 +115,17 @@ export default function Tracker() {
   return (
     <main>
       <header className="masthead">
-        <a className="wordmark" href="#top" aria-label="Catalog Watch home"><span className="signal-dot" />CATALOG WATCH</a>
-        <div className="masthead-meta"><span>AWS re:Invent 2026</span><span>Las Vegas · Nov 30—Dec 4</span></div>
+        <a className="reinvent-mark" href="#top" aria-label="re:AInvent unofficial catalog audit home">
+          <span className="logo-aws">AWS?</span>
+          <span className="logo-event">re:<b>AI</b>nvent</span>
+        </a>
+        <div className="masthead-meta"><span>UNOFFICIAL CATALOG AUDIT</span><span>NOV 30—DEC 4 · LAS VEGAS</span></div>
       </header>
       <section className="hero" id="top">
-        <div className="eyebrow"><span>PANGRAM AUDIT</span> Every published session description, scored</div>
-        <h1>AWS’s catalog is<br /><em>{aiSignalPercent ?? "—"}% AI.</em></h1>
-        <p className="dek">Pangram flags {aiStats?.signal.toLocaleString() ?? "—"} of {data?.sessions.length.toLocaleString() ?? "—"} re:Invent session descriptions as AI-written or AI-assisted. We brought receipts.</p>
+        <div className="hero-grid" aria-hidden="true" />
+        <div className="eyebrow"><span>2026 SESSION CATALOG</span> Audited by Pangram</div>
+        <h1><span>Prompt what’s next.</span><em>{aiSignalPercent ?? "—"}% AI</em></h1>
+        <p className="dek">AWS invited builders. Its session catalog brought a language model. Pangram flags {aiStats?.signal.toLocaleString() ?? "—"} of {data?.sessions.length.toLocaleString() ?? "—"} descriptions for AI involvement.</p>
         {data && <div className="dateline"><span className="pulse" /> Last checked {fmtTime(data.stats.last_scrape)}</div>}
       </section>
       <section className="scoreboard ai-scoreboard" aria-label="Pangram authorship results">
@@ -175,7 +179,11 @@ export default function Tracker() {
           {data?.events.map((event) => <article className="activity-row" key={`${event.id}-${event.ts}`}><time>{fmtTime(event.ts)}</time><span className={`event-type ${event.type}`}>{event.type.replace("_", " ")}</span><div><b>{event.code}</b> {event.title}{event.detail && <small>{event.detail}</small>}</div></article>)}
         </div>}
       </section>
-      <footer><div><span className="signal-dot" />CATALOG WATCH</div><p>Independent catalog tracking. Not affiliated with or endorsed by AWS.</p><a href="#top">Back to top ↑</a></footer>
+      <footer>
+        <div className="footer-mark"><span>AWS?</span><b>re:<em>AI</em>nvent</b></div>
+        <p>A parody and independent catalog audit.<br />Not affiliated with or endorsed by AWS.</p>
+        <a href="#top">Back to top ↑</a>
+      </footer>
     </main>
   );
 }

@@ -13,15 +13,15 @@ async function render() {
   );
 }
 
-test("renders the Catalog Watch public page", async () => {
+test("renders the re:AInvent parody page", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
-  assert.match(html, /<title>85% AI — Catalog Watch for AWS re:Invent 2026<\/title>/i);
-  assert.match(html, /AWS’s catalog is/);
-  assert.match(html, /PANGRAM AUDIT/);
-  assert.match(html, /\/og-ai\.png/);
+  assert.match(html, /<title>AWS re:AInvent — 85% AI<\/title>/i);
+  assert.match(html, /Prompt what’s next/);
+  assert.match(html, /2026 SESSION CATALOG/);
+  assert.match(html, /\/og-reainvent\.png/);
   assert.doesNotMatch(html, /codex-preview|SkeletonPreview|Your site is taking shape/i);
 });
 

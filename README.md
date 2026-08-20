@@ -1,6 +1,6 @@
-# Catalog Watch
+# AWS? re:AInvent
 
-A public, static tracker and Pangram authorship audit for the AWS re:Invent 2026 session catalog. It scores every description, preserves the catalog history, records additions and edits, confirms removals after two consecutive checks, and publishes a searchable site.
+An unofficial parody, public static tracker, and Pangram authorship audit for the AWS re:Invent 2026 session catalog. It scores every description, preserves the catalog history, records additions and edits, confirms removals after two consecutive checks, and publishes a searchable site.
 
 ## Local development
 

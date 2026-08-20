@@ -1,29 +1,29 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 const sans = Geist({ variable: "--font-sans", subsets: ["latin"] });
 const mono = Geist_Mono({ variable: "--font-mono", subsets: ["latin"] });
-const display = Instrument_Serif({ variable: "--font-display", subsets: ["latin"], weight: "400" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
-  title: "85% AI — Catalog Watch for AWS re:Invent 2026",
-  description: "Pangram flags 85% of AWS re:Invent 2026 session descriptions for AI involvement. See every score, addition, edit, and removal.",
+  title: "AWS re:AInvent — 85% AI",
+  description: "An unofficial re:Invent catalog audit. Pangram flags 85% of AWS’s 2026 session descriptions for AI involvement.",
+  icons: { icon: "/favicon.png", shortcut: "/favicon.png" },
   openGraph: {
-    title: "AWS’s re:Invent catalog is 85% AI",
-    description: "Every one of the 1,121 session descriptions, scored by Pangram—with the catalog history attached.",
-    images: [{ url: "/og-ai.png", width: 1728, height: 912, alt: "Catalog Watch — AWS’s catalog is 85% AI" }],
+    title: "AWS re:AInvent — Prompt what’s next",
+    description: "Pangram flags 85% of the 1,121 re:Invent session descriptions for AI involvement.",
+    images: [{ url: "/og-reainvent.png", width: 1728, height: 912, alt: "AWS? re:AInvent — Prompt what’s next. 85% AI" }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "AWS’s re:Invent catalog is 85% AI",
-    description: "Every session description, scored by Pangram.",
-    images: ["/og-ai.png"],
+    title: "AWS re:AInvent — 85% AI",
+    description: "Prompt what’s next. Every session description, scored by Pangram.",
+    images: ["/og-reainvent.png"],
   },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body className={`${sans.variable} ${mono.variable} ${display.variable}`}>{children}</body></html>;
+  return <html lang="en"><body className={`${sans.variable} ${mono.variable}`}>{children}</body></html>;
 }
