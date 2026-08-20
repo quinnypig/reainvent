@@ -19,6 +19,14 @@ npm run update
 
 The updater fetches every RainFocus page, rejects implausibly small or incomplete scrapes, and writes a deterministic public data file. A missing session is only marked as pulled after it is absent from two consecutive updates. Unchanged Pangram results are preserved; new and edited descriptions are bulk-scored when `PANGRAM_API_KEY` is set.
 
-The GitHub Actions workflow runs at 17 and 47 minutes past each hour, uses the `PANGRAM_API_KEY` repository secret for new scores, commits changes, and verifies the site build. Publishing is intentionally not activated yet; the local version is ready for review first.
+The GitHub Actions workflow runs at 17 and 47 minutes past each hour, uses the `PANGRAM_API_KEY` repository secret for new scores, commits changes, verifies the build, and deploys it directly to Cloudflare Workers. It needs three repository secrets: `PANGRAM_API_KEY`, `CLOUDFLARE_API_TOKEN`, and `CLOUDFLARE_ACCOUNT_ID`.
 
-Set `NEXT_PUBLIC_SITE_URL` to the final public origin when publishing so social-card URLs are absolute.
+## Deployment
+
+The production site is <https://reainvent.com>. It runs directly on Cloudflare Workers and uses a Cloudflare custom domain; there is no Sites or ChatGPT hosting dependency.
+
+```bash
+npm run deploy:cloudflare
+```
+
+Wrangler must be authenticated with the Cloudflare account that manages `reainvent.com`. The build embeds the production origin by default; set `NEXT_PUBLIC_SITE_URL` only when producing a preview for another origin.

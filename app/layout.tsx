@@ -6,7 +6,7 @@ const sans = Geist({ variable: "--font-sans", subsets: ["latin"] });
 const mono = Geist_Mono({ variable: "--font-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://reainvent.com"),
   title: "AWS re:AInvent — 85% AI",
   description: "An unofficial re:Invent catalog audit. Pangram flags 85% of AWS’s 2026 session descriptions for AI involvement.",
   icons: { icon: "/favicon.png", shortcut: "/favicon.png" },
