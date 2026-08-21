@@ -9,6 +9,7 @@ const localBindingConfig = {
   main: "./worker/index.ts",
   compatibility_flags: ["nodejs_compat"],
   routes: [{ pattern: "reainvent.com", custom_domain: true }],
+  assets: { binding: "ASSETS", run_worker_first: true },
 };
 
 export default defineConfig(async () => {

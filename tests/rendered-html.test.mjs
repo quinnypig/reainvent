@@ -1,27 +1,44 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 
 async function render() {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
+  const password = "test-password";
+  const token = createHash("sha256").update(`reainvent:${password}`).digest("hex");
   return worker.fetch(
-    new Request("http://localhost/", { headers: { accept: "text/html" } }),
-    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
+    new Request("http://localhost/", { headers: { accept: "text/html", cookie: `reainvent_access=${token}` } }),
+    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) }, SITE_PASSWORD: password },
     { waitUntil() {}, passThroughOnException() {} },
   );
 }
+
+test("protects the catalog behind the private-preview login", async () => {
+  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  workerUrl.searchParams.set("auth-test", `${process.pid}-${Date.now()}`);
+  const { default: worker } = await import(workerUrl.href);
+  const response = await worker.fetch(new Request("http://localhost/data.json"), { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) }, SITE_PASSWORD: "test-password" }, { waitUntil() {}, passThroughOnException() {} });
+  assert.equal(response.status, 302);
+  assert.match(response.headers.get("location") || "", /^\/__login\?next=/);
+  assert.match(response.headers.get("x-robots-tag") || "", /noindex/);
+});
 
 test("renders the re:AInvent parody page", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
-  assert.match(html, /<title>AWS re:AInvent — 85% AI<\/title>/i);
-  assert.match(html, /Prompt what’s next/);
-  assert.match(html, /2026 SESSION CATALOG/);
-  assert.match(html, /\/og-reainvent\.png/);
+  const data = JSON.parse(await readFile(new URL("../public/data.json", import.meta.url), "utf8"));
+  const signal = data.sessions.filter((session) => ["AI", "Mixed"].includes(session.pangram?.label)).length;
+  const percent = (signal / data.sessions.length * 100).toFixed(1).replace(".", "\\.");
+  assert.match(html, new RegExp(`<title>re:AInvent catalog audit — ${percent}% show an AI signal<\\/title>`, "i"));
+  assert.match(html, /session descriptions show an AI-writing signal/i);
+  assert.match(html, /AWS re:Invent 2026 catalog/i);
+  assert.doesNotMatch(html, /THE RECEIPTS|THE INDEX|See every score|The humans were outnumbered/i);
+  assert.match(html, /\/og-reainvent-v3\.png/);
   assert.doesNotMatch(html, /codex-preview|SkeletonPreview|Your site is taking shape/i);
 });
 

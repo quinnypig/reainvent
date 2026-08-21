@@ -14,7 +14,7 @@ const MISSING_PATH = new URL("../state/missing.json", import.meta.url);
 const attrs = (item, id) => (item.attributevalues || []).filter((x) => x.attribute_id === id).map((x) => x.value || "").filter(Boolean).sort();
 const sidFor = (item) => item.sessionID || item.externalID || item.code;
 const normalize = (item, now, previous = null) => ({
-  pangram: previous?.abstract === (item.abstract || "") ? previous.pangram : null,
+  pangram: previous?.title === (item.title || "Untitled session") && previous?.abstract === (item.abstract || "") ? previous.pangram : null,
   sid: sidFor(item), code: item.code || "TBA", title: item.title || "Untitled session",
   status: "active", first_seen: previous?.first_seen || now, last_seen: now,
   removed_at: null, seed: previous?.seed ?? 0, abstract: item.abstract || "",

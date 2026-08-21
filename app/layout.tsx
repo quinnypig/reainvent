@@ -1,29 +1,32 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import catalog from "../public/data.json";
 import "./globals.css";
 
-const sans = Geist({ variable: "--font-sans", subsets: ["latin"] });
-const mono = Geist_Mono({ variable: "--font-mono", subsets: ["latin"] });
+const activeSessions = catalog.sessions;
+const signalCount = activeSessions.filter((session) => session.pangram?.label === "AI" || session.pangram?.label === "Mixed").length;
+const signalPercent = (signalCount / activeSessions.length * 100).toFixed(1);
+const finding = `${signalPercent}% show an AI signal`;
+const description = `Pangram flags ${signalCount.toLocaleString("en-US")} of ${activeSessions.length.toLocaleString("en-US")} AWS re:Invent 2026 session descriptions as AI or mixed.`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://reainvent.com"),
-  title: "AWS re:AInvent — 85% AI",
-  description: "An unofficial re:Invent catalog audit. Pangram flags 85% of AWS’s 2026 session descriptions for AI involvement.",
+  title: `re:AInvent catalog audit — ${finding}`,
+  description,
   icons: { icon: "/favicon.png", shortcut: "/favicon.png" },
   openGraph: {
-    title: "AWS re:AInvent — Prompt what’s next",
-    description: "Pangram flags 85% of the 1,121 re:Invent session descriptions for AI involvement.",
-    images: [{ url: "/og-reainvent.png", width: 1728, height: 912, alt: "AWS? re:AInvent — Prompt what’s next. 85% AI" }],
+    title: `${signalPercent}% of re:Invent descriptions show an AI signal`,
+    description,
+    images: [{ url: "/og-reainvent-v3.png", width: 1731, height: 909, alt: "AWS? re:AInvent — independent 2026 catalog audit" }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "AWS re:AInvent — 85% AI",
-    description: "Prompt what’s next. Every session description, scored by Pangram.",
-    images: ["/og-reainvent.png"],
+    title: `re:AInvent catalog audit — ${finding}`,
+    description: "Every AWS re:Invent 2026 session description, scored by Pangram.",
+    images: ["/og-reainvent-v3.png"],
   },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body className={`${sans.variable} ${mono.variable}`}>{children}</body></html>;
+  return <html lang="en"><body>{children}</body></html>;
 }
