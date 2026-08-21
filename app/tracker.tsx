@@ -127,33 +127,43 @@ export default function Tracker() {
           <span className="logo-aws">AWS?</span>
           <span className="logo-event">re:<b>AI</b>nvent</span>
         </a>
-        <div className="masthead-meta"><span>2026 catalog audit</span><a href="#catalog">Browse sessions</a></div>
-      </header>
-      <section className="audit-lead" id="top">
-        <div className="lead-copy">
-          <p className="eyebrow">AWS re:Invent 2026 catalog · scored by Pangram</p>
-          <h1><mark>{aiSignalPercent ?? "—"}%</mark> of session descriptions show an AI-writing signal.</h1>
-          <p className="dek">Pangram flagged {aiStats?.signal.toLocaleString() ?? "—"} of {data?.sessions.length.toLocaleString() ?? "—"} active descriptions as AI or mixed.</p>
-          <p className="caveat">AI-text detection is probabilistic, not proof of authorship. <a href="https://www.pangram.com/research/model-card/pangram-4" target="_blank" rel="noreferrer">Pangram 4 model card ↗</a> · <a href="https://aws.amazon.com/events/reinvent/agenda/" target="_blank" rel="noreferrer">AWS event catalog ↗</a></p>
-          <p className="aside">Automate everything—apparently including the event copy.</p>
-          {data && <p className="dateline">Catalog checked {fmtTime(data.stats.last_scrape)}</p>}
+        <div className="masthead-meta">
+          <span className="audit-label">Unofficial catalog audit</span>
+          <span className="event-date">Nov 30—Dec 4 · Las Vegas</span>
+          <a href="#catalog">Browse sessions</a>
         </div>
-        <div className="audit-summary" aria-label="Pangram authorship results">
-          <p className="summary-label">Pangram classification</p>
-          <div className="distribution-bar" aria-hidden="true">
-            <span className="bar-ai" style={{ width: `${data ? aiStats!.ai / data.sessions.length * 100 : 0}%` }} />
-            <span className="bar-mixed" style={{ width: `${data ? aiStats!.mixed / data.sessions.length * 100 : 0}%` }} />
-            <span className="bar-human" style={{ width: `${data ? aiStats!.human / data.sessions.length * 100 : 0}%` }} />
+      </header>
+      <section className="brand-hero" id="top">
+        <div className="brand-orbit" aria-hidden="true" />
+        <div className="hero-inner">
+          <div className="lead-copy">
+            <p className="eyebrow"><span>AWS re:Invent 2026 catalog</span> Pangram 4 audit</p>
+            <h1><mark>{aiSignalPercent ?? "—"}%</mark><span>of session descriptions show an AI-writing signal.</span></h1>
+            <p className="dek">Pangram flagged {aiStats?.signal.toLocaleString() ?? "—"} of {data?.sessions.length.toLocaleString() ?? "—"} active descriptions as AI or mixed.</p>
           </div>
-          <div className="classification-key">
-            <button onClick={() => { selectView("sessions"); setAuthorship("AI"); }}><i className="key-ai" /><span>AI</span><strong>{aiStats?.ai ?? "—"}</strong><small>{classPercent(aiStats?.ai)}</small></button>
-            <button onClick={() => { selectView("sessions"); setAuthorship("Mixed"); }}><i className="key-mixed" /><span>Mixed</span><strong>{aiStats?.mixed ?? "—"}</strong><small>{classPercent(aiStats?.mixed)}</small></button>
-            <button onClick={() => { selectView("sessions"); setAuthorship("Human"); }}><i className="key-human" /><span>Human</span><strong>{aiStats?.human ?? "—"}</strong><small>{classPercent(aiStats?.human)}</small></button>
-          </div>
-          <details className="method">
-            <summary>Methodology and caveats</summary>
-            <p>Pangram 4 scores each title and description. Changed descriptions are rescored. The results are probabilistic signals, not proof of authorship. All {data?.sessions.length.toLocaleString() ?? "—"} active sessions currently have a verdict.</p>
-          </details>
+          <aside className="hero-proof">
+            <p className="proof-label">The finding</p>
+            <p className="aside">Automate everything—apparently including the event copy.</p>
+            <p className="caveat">AI-text detection is probabilistic, not proof of authorship. <a href="https://www.pangram.com/research/model-card/pangram-4" target="_blank" rel="noreferrer">Pangram 4 model card ↗</a> · <a href="https://aws.amazon.com/events/reinvent/agenda/" target="_blank" rel="noreferrer">AWS event catalog ↗</a></p>
+            <details className="method">
+              <summary>Methodology and caveats</summary>
+              <p>Pangram 4 scores each title and description. Changed descriptions are rescored. All {data?.sessions.length.toLocaleString() ?? "—"} active sessions currently have a verdict.</p>
+            </details>
+            {data && <p className="dateline">Catalog checked {fmtTime(data.stats.last_scrape)}</p>}
+          </aside>
+        </div>
+      </section>
+      <section className="scoreboard" aria-label="Pangram authorship results">
+        <div className="distribution-bar" aria-hidden="true">
+          <span className="bar-ai" style={{ width: `${data ? aiStats!.ai / data.sessions.length * 100 : 0}%` }} />
+          <span className="bar-mixed" style={{ width: `${data ? aiStats!.mixed / data.sessions.length * 100 : 0}%` }} />
+          <span className="bar-human" style={{ width: `${data ? aiStats!.human / data.sessions.length * 100 : 0}%` }} />
+        </div>
+        <div className="score-grid">
+          <button className="signal-total" onClick={() => { selectView("sessions"); setAuthorship("signal"); }}><strong>{aiSignalPercent ?? "—"}%</strong><span>AI-writing signal</span><small>AI + mixed</small></button>
+          <button onClick={() => { selectView("sessions"); setAuthorship("AI"); }}><strong>{aiStats?.ai.toLocaleString() ?? "—"}</strong><span>Classified AI</span><small>{classPercent(aiStats?.ai)}</small></button>
+          <button className="mixed-total" onClick={() => { selectView("sessions"); setAuthorship("Mixed"); }}><strong>{aiStats?.mixed.toLocaleString() ?? "—"}</strong><span>Classified mixed</span><small>{classPercent(aiStats?.mixed)}</small></button>
+          <button className="human-total" onClick={() => { selectView("sessions"); setAuthorship("Human"); }}><strong>{aiStats?.human.toLocaleString() ?? "—"}</strong><span>Classified human</span><small>{classPercent(aiStats?.human)}</small></button>
         </div>
       </section>
       <section className="catalog" id="catalog">
