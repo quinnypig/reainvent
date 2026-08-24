@@ -21,6 +21,10 @@ jobs:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Scheduled runs can wait behind another refresh. Resolve main when the
+          # job starts so a queued run does not try to push from a stale SHA.
+          ref: main
       - uses: actions/setup-node@v4
         with:
           node-version: 22
