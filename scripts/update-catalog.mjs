@@ -87,8 +87,7 @@ async function main() {
   active.sort((a, b) => a.code.localeCompare(b.code));
   const scoring = await scorePending(active, { statePath: PANGRAM_STATE_PATH });
   if (scoring.status !== "complete") {
-    console.log("Catalog snapshot left unchanged until Pangram finishes scoring every pending description");
-    return;
+    console.warn(`Publishing fresh catalog data with pending Pangram scores (${scoring.status})`);
   }
   const removed = [...removedById.values()].sort((a, b) => (b.removed_at || 0) - (a.removed_at || 0));
   const cutoff14d = now - 14 * 86400;

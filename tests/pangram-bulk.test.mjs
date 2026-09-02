@@ -129,3 +129,23 @@ test("defers a transient Pangram submission failure instead of failing the catal
   assert.equal(result.status, "deferred");
   assert.equal(result.scored, 0);
 });
+
+test("skips Pangram scoring when account access is unavailable", async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), "reainvent-pangram-"));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  const warnings = [];
+
+  const result = await scorePending([session()], {
+    apiKey: "test-key",
+    baseUrl: "https://pangram.test",
+    statePath: join(directory, "job.json"),
+    fetchImpl: async () => new Response("payment required", { status: 402 }),
+    now: () => 100_000,
+    sleep: async () => {},
+    logger: { log() {}, warn(message) { warnings.push(message); } },
+  });
+
+  assert.equal(result.status, "skipped");
+  assert.equal(result.scored, 0);
+  assert.match(warnings[0], /publishing the catalog without new scores/);
+});

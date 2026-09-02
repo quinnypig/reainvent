@@ -51,11 +51,15 @@ test("renders the re:AInvent parody page", async () => {
   assert.doesNotMatch(html, /codex-preview|SkeletonPreview|Your site is taking shape/i);
 });
 
-test("ships a fully scored Kubernetes catalog snapshot", async () => {
+test("ships a complete catalog snapshot while accounting for pending scores", async () => {
   const data = JSON.parse(await readFile(new URL("../public/data.json", import.meta.url), "utf8"));
   assert.equal(data.sessions.length, data.stats.total);
-  assert.equal(data.sessions.filter((session) => session.pangram?.ai != null).length, data.sessions.length);
-  const labels = Object.groupBy(data.sessions, (session) => session.pangram.label);
-  assert.equal((labels.AI?.length || 0) + (labels.Mixed?.length || 0) + (labels.Human?.length || 0), data.sessions.length);
-  assert.ok((labels.AI.length + labels.Mixed.length) / data.sessions.length > 0.5);
+  assert.equal(data.stats.pangram.sessions, data.sessions.length);
+  const scored = data.sessions.filter((session) => session.pangram?.ai != null);
+  const pending = data.sessions.length - scored.length;
+  assert.equal(data.stats.pangram.scored, scored.length);
+  assert.equal(data.stats.pangram.skipped, pending);
+  const labels = Object.groupBy(scored, (session) => session.pangram.label);
+  assert.equal((labels.AI?.length || 0) + (labels.Mixed?.length || 0) + (labels.Human?.length || 0), scored.length);
+  assert.ok(((labels.AI?.length || 0) + (labels.Mixed?.length || 0)) / scored.length > 0.5);
 });

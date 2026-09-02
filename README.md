@@ -17,7 +17,7 @@ Open <http://localhost:3000>. The repository includes a current snapshot in `pub
 npm run update
 ```
 
-The updater fetches every RainFocus page, rejects implausibly small or incomplete scrapes, and writes a deterministic public data file. A missing session is only marked as pulled after it is absent from two consecutive updates. Unchanged Pangram results are preserved; new and edited descriptions are bulk-scored when `PANGRAM_API_KEY` is set.
+The updater fetches every RainFocus page, rejects implausibly small or incomplete scrapes, and writes a deterministic public data file. A missing session is only marked as pulled after it is absent from two consecutive updates. Unchanged Pangram results are preserved; new and edited descriptions are bulk-scored when `PANGRAM_API_KEY` is set. Catalog changes are still published when Pangram is temporarily unavailable, with missing scores filled in by a later run.
 
 The GitHub Actions workflow runs at 17 and 47 minutes past each hour, uses the `PANGRAM_API_KEY` repository secret for new scores, commits changes, verifies the build, and deploys it directly to Cloudflare Workers. It needs two repository secrets: `PANGRAM_API_KEY` and `CLOUDFLARE_API_TOKEN`. Until the Cloudflare token is configured, builds still pass but the deploy step is skipped.
 

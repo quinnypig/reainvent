@@ -3,6 +3,7 @@ import { readFile, writeFile } from "node:fs/promises";
 
 const TERMINAL_SUCCESS = new Set(["succeeded", "completed", "partial"]);
 const TERMINAL_FAILURE = new Set(["failed", "error"]);
+const CREDENTIAL_FAILURE = new Set([401, 402, 403]);
 
 const digest = (value) => createHash("sha256").update(value).digest("hex");
 const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
@@ -112,6 +113,10 @@ export async function scorePending(sessions, {
       if (isRetryableStatus(submitted.status)) {
         logger.warn(`Pangram bulk submission returned HTTP ${submitted.status}; a later catalog run will retry`);
         return { status: "deferred", scored: 0 };
+      }
+      if (CREDENTIAL_FAILURE.has(submitted.status)) {
+        logger.warn(`Pangram scoring is unavailable (HTTP ${submitted.status}); publishing the catalog without new scores`);
+        return { status: "skipped", scored: 0 };
       }
       throw new Error(`Pangram bulk submission returned HTTP ${submitted.status}`);
     }
