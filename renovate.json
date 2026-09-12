@@ -1,0 +1,17 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "ignoreTests": false,
+  "packageRules": [
+    {
+      "description": "React and its renderers require the exact same release; update and review them together.",
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["react", "react-dom", "react-server-dom-webpack"],
+      "groupName": "React runtime",
+      "minimumGroupSize": 3,
+      "separateMajorMinor": false,
+      "separateMinorPatch": false,
+      "rangeStrategy": "pin",
+      "automerge": false
+    }
+  ]
+}
