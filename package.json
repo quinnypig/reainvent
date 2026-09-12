@@ -15,7 +15,7 @@
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
   },
   "dependencies": {
-    "react": "19.2.6",
+    "react": "19.3.0",
     "react-dom": "19.2.6"
   },
   "devDependencies": {
@@ -24,7 +24,7 @@
     "@next/eslint-plugin-next": "16.3.4",
     "@tailwindcss/postcss": "4.3.3",
     "@types/node": "22.20.2",
-    "@types/react": "19.2.14",
+    "@types/react": "19.3.0",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "6.1.1",
     "@vitejs/plugin-rsc": "0.5.34",
