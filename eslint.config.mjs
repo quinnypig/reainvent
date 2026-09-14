@@ -32,7 +32,9 @@ const eslintConfig = defineConfig([
     },
     settings: {
       react: {
-        version: "detect",
+        // "detect" walks the filesystem via context.getFilename(), an API
+        // removed in ESLint 10. The repo pins react 19.3.0, so state it.
+        version: "19.3",
       },
     },
   },
