@@ -32,7 +32,9 @@ const eslintConfig = defineConfig([
     },
     settings: {
       react: {
-        version: "detect",
+        // eslint-plugin-react's "detect" mode calls context.getFilename(),
+        // which ESLint 10 removed; pin the version this repo ships instead.
+        version: "19.3",
       },
     },
   },
