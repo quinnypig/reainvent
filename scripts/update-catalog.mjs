@@ -36,7 +36,7 @@ async function fetchPage(offset) {
 async function scrape() {
   const all = new Map();
   let offset = 0;
-  let total = 0;
+  let total;
   do {
     const page = await fetchPage(offset);
     total = page.total;
