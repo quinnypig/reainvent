@@ -1,4 +1,10 @@
 {
   "version": 1,
-  "status": "idle"
+  "status": "active",
+  "request_hash": "267e8f6fe0e5117b0af0a406e89fdbaebbc6a467a21ca664294c4247237dcc89",
+  "bulk_id": "blk_6a0851d3993b46cbb3a32ea86e1ffb30",
+  "submitted_at": 1790060516411,
+  "last_progress_at": 1790060516411,
+  "succeeded": 0,
+  "failed": 0
 }
