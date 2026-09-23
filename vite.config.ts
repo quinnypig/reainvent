@@ -7,6 +7,8 @@ const devHost = process.env.DEV_HOST;
 
 const localBindingConfig = {
   main: "./worker/index.ts",
+  name: "reainvent",
+  d1_databases: [{ binding: "DB", database_name: "resell-accounts", database_id: process.env.RESELL_DATABASE_ID || "local-resell-accounts", migrations_dir: "./migrations" }],
   compatibility_flags: ["nodejs_compat"],
   routes: [{ pattern: "reainvent.com", custom_domain: true }],
   assets: { binding: "ASSETS", run_worker_first: true },
@@ -24,6 +26,7 @@ export default defineConfig(async () => {
 
   return {
     server: {
+      allowedHosts: ["claude-superfund.shitposting.ts.net"],
       ...(devHost ? { host: devHost } : {}),
       ...(isCodexSeatbeltSandbox
         ? { watch: { useFsEvents: false, usePolling: true } }

@@ -6,7 +6,7 @@ const RF_URL = process.env.RF_URL || "https://catalog.awsevents.com/api/sessions
 const RF_PROFILE_ID = process.env.RF_PROFILE_ID || "mSEPBdEOSHwzxJwd7H8MfSWVylSYQsS4";
 const RF_WIDGET_ID = process.env.RF_WIDGET_ID || "nbNFIlUhukEGI22KvPEwpPdWgK6FoPsi";
 const PAGE_SIZE = 50;
-const DATA_PATH = new URL("../public/data.json", import.meta.url);
+const DATA_PATH = new URL("../archive/catalog-private.json", import.meta.url);
 const MISSING_PATH = new URL("../state/missing.json", import.meta.url);
 const PANGRAM_STATE_PATH = new URL("../state/pangram-job.json", import.meta.url);
 

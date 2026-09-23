@@ -1,5 +1,2 @@
-import Tracker from "./tracker";
-
-export default function Home() {
-  return <Tracker />;
-}
+import Marketplace from "./marketplace";
+export default function Home() { return <Marketplace />; }
