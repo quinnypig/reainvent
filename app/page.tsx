@@ -1,2 +1,4 @@
 import Marketplace from "./marketplace";
-export default function Home() { return <Marketplace />; }
+export default function Home() {
+  return <Marketplace />;
+}
