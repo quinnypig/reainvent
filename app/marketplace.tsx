@@ -266,7 +266,20 @@ export default function Marketplace() {
                 fails, the buyer gets a full refund.
               </p>
               <button onClick={() => openTrade(listings[0], "sell")}>
-                Try your own price <span>↗</span>
+                Try your own price
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M5 19 19 5M5 5h14v14" />
+                </svg>
               </button>
             </article>
             <div className="ticket-caption">
