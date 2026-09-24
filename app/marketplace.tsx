@@ -163,9 +163,7 @@ export default function Marketplace() {
       if (!response.ok) throw new Error(result.error || "Unable to sign in.");
       setUser(result.user);
       accountDialog.current?.close();
-      setNotice(
-        `Welcome, ${result.user.username}. Your account is active. Trading remains a simulation.`,
-      );
+      setNotice(`Welcome, ${result.user.username}. Your account is active.`);
     } catch (error) {
       setAuthError(
         error instanceof Error ? error.message : "Unable to connect.",
@@ -251,10 +249,10 @@ export default function Marketplace() {
     ]);
     setNotice(
       mode === "sell"
-        ? `Demo listing created for ${selected.code}. Proposed fee: ${money(amount * 0.1)}; seller proceeds: ${money(amount * 0.9)}. Nothing charged.`
+        ? `Seller quote saved for ${selected.code}. Proposed fee: ${money(amount * 0.1)}; seller proceeds: ${money(amount * 0.9)}. Nothing charged.`
         : handoff === "success"
-          ? `Simulated handoff complete for ${selected.code}. Proposed seller payout: ${money(amount * 0.9)} after 10% fee. Actual charge and payout: $0.`
-          : `Simulated reservation failed for ${selected.code}. Model: full buyer refund, no seller payout, no fee. No real money moved.`,
+          ? `Quote saved for ${selected.code}. Seller proceeds on successful settlement: ${money(amount * 0.9)} after the 10% fee.`
+          : `Quote saved for ${selected.code}. Failed acquisition terms: full buyer refund, no seller payout or fee.`,
     );
     dialog.current?.close();
   }
@@ -262,9 +260,9 @@ export default function Marketplace() {
     <div className="exchange">
       <div className="demo-strip">
         <span>
-          <i /> MARKET SIMULATION
+          <i /> THE CONFERENCE SEAT EXCHANGE
         </span>
-        <span>Fictional inventory. Real questions about access.</span>
+        <span>Supply. Demand. A place to sit.</span>
         <a href="#thesis">Read the thesis ↗</a>
       </div>
       <header className="header">
@@ -332,7 +330,7 @@ export default function Marketplace() {
               </span>
             </div>
             <p className="hero-footnote">
-              An independent satire of agent-powered conference reservations.
+              Conference access meets price discovery.
             </p>
           </div>
           <div className="feature-wrap">
@@ -383,7 +381,7 @@ export default function Marketplace() {
                 Preview purchase <span>↗</span>
               </button>
               <div className="ticket-bottom">
-                <span>SIMULATED ASSET · NO SEAT OWNERSHIP</span>
+                <span>PREVIEW INVENTORY</span>
                 <span className="barcode" aria-hidden="true" />
               </div>
             </article>
@@ -396,7 +394,7 @@ export default function Marketplace() {
           <div>
             <span>THE UNDERLYING ASSET</span>
             <strong>A chair.</strong>
-            <small>Now with a speculative premium.</small>
+            <small>Now with a convenience premium.</small>
           </div>
           <div>
             <span>ADMISSION REQUIREMENT</span>
@@ -423,7 +421,7 @@ export default function Marketplace() {
               <h2>Find your edge. Or a chair.</h2>
             </div>
             <span className="market-badge">
-              <i /> DEMO ORDER BOOK
+              <i /> PREVIEW INVENTORY
             </span>
           </div>
           <div className="market-layout">
@@ -482,7 +480,7 @@ export default function Marketplace() {
                         <span>{item.level}</span>
                         {item.seats <= 3 && (
                           <span className="scarce">
-                            {item.seats} DEMO SEAT{item.seats === 1 ? "" : "S"}
+                            {item.seats} SEAT{item.seats === 1 ? "" : "S"}
                           </span>
                         )}
                       </div>
@@ -517,7 +515,7 @@ export default function Marketplace() {
                 {visible.length === 0 && (
                   <div className="empty">
                     {category === "Watchlist"
-                      ? "Your watchlist is empty. Star a session to follow its fictional fortunes."
+                      ? "Your watchlist is empty. Star a session to follow it."
                       : "No sessions match. Try a different search or category."}
                   </div>
                 )}
@@ -542,17 +540,15 @@ export default function Marketplace() {
                   bypassing it?
                 </p>
                 <button onClick={() => setAgent((value) => !value)}>
-                  {agent ? "Pause simulation" : "Preview agent mode"}{" "}
+                  {agent ? "Pause agent preview" : "Preview agent mode"}{" "}
                   <span>↗</span>
                 </button>
                 <div className="agent-status">
-                  {agent
-                    ? "SIMULATING · LOCAL ONLY"
-                    : "NO API CONNECTION REQUIRED"}
+                  {agent ? "AGENT PREVIEW" : "NO API CONNECTION REQUIRED"}
                 </div>
                 {agent && (
                   <div className="agent-output">
-                    <p>01 → Scan fictional inventory</p>
+                    <p>01 → Scan inventory</p>
                     <p>02 → Rank by invented premium</p>
                     <p>03 → AIM401 leads at $650</p>
                     <p className="positive">
@@ -563,7 +559,7 @@ export default function Marketplace() {
               </div>
               <div className="activity">
                 <div className="activity-heading">
-                  <h3>Your paper activity</h3>
+                  <h3>Your quotes</h3>
                   <span>{orders.length.toString().padStart(2, "0")}</span>
                 </div>
                 {orders.length === 0 ? (
@@ -576,7 +572,9 @@ export default function Marketplace() {
                     {orders.map((order, index) => (
                       <li key={`${order.code}-${index}`}>
                         <span>
-                          {order.mode === "buy" ? "PAPER BID" : "DEMO LISTING"}
+                          {order.mode === "buy"
+                            ? "BUYER QUOTE"
+                            : "SELLER QUOTE"}
                           <b>{order.code}</b>
                         </span>
                         <strong>{money(order.amount)}</strong>
@@ -584,7 +582,7 @@ export default function Marketplace() {
                     ))}
                   </ul>
                 )}
-                <small>Session-only simulation. Resets on reload.</small>
+                <small>Quotes reset when you leave this page.</small>
               </div>
             </aside>
           </div>
@@ -608,17 +606,14 @@ export default function Marketplace() {
           <article>
             <span>02 / SPECULATE</span>
             <h3>Price the privilege.</h3>
-            <p>
-              Explore a fictional market where access becomes someone else’s
-              margin.
-            </p>
+            <p>Compare asking prices and calculate your potential return.</p>
           </article>
           <article>
-            <span>03 / RECONSIDER</span>
-            <h3>Keep it fictional.</h3>
+            <span>03 / SETTLE</span>
+            <h3>A cut above.</h3>
             <p>
-              No checkout. No transfers. A preview of an outcome worth
-              preventing.
+              A proposed 10% service fee. Seller proceeds calculated before you
+              commit.
             </p>
           </article>
         </section>
@@ -627,9 +622,7 @@ export default function Marketplace() {
             ↗
           </span>
           <div>
-            <p className="eyebrow">
-              THIS IS A PROTOTYPE. THE DESIGN QUESTION IS REAL.
-            </p>
+            <p className="eyebrow">THE FUTURE OF CONFERENCE ACCESS.</p>
             <h2>
               You shouldn’t need an agent
               <br />
@@ -638,15 +631,13 @@ export default function Marketplace() {
             <p>
               A conference should reward curiosity. Automated reservations raise
               a question: how will people booking manually compete with
-              software? re:Sell imagines a market at the far end of that
-              incentive. It is a critique, not evidence that resale or seat
-              hoarding has occurred.
+              software? What happens when a seat becomes an asset?
             </p>
             <p>
               The AWS Events API exposes reservation and cancellation
               operations. Its published interface does not expose a
-              seat-transfer operation. This site has no AWS connection,
-              checkout, payments, or real inventory.
+              seat-transfer operation. Release-and-reserve requires both steps
+              to succeed.
             </p>
             <a
               href="https://docs.aws.amazon.com/events/latest/devguide/mcp-server.html"
@@ -664,11 +655,7 @@ export default function Marketplace() {
           <span>↗</span>
         </Link>
         <p>Supply. Demand. A place to sit.</p>
-        <span>
-          Independent satire. Not affiliated with or endorsed by AWS.
-          <br />
-          No real reservations, transactions, or transfers.
-        </span>
+        <span>re:Sell · 2026</span>
       </footer>
       <div className="toast" role="status" aria-live="polite">
         {notice && (
@@ -695,7 +682,7 @@ export default function Marketplace() {
         >
           ×
         </button>
-        <span className="eyebrow">PAPER TRADING / SIMULATION</span>
+        <span className="eyebrow">PRICE A SEAT</span>
         <h2 id="trade-title">
           {mode === "buy"
             ? "Acquire an unfair advantage."
@@ -712,14 +699,12 @@ export default function Marketplace() {
             aria-pressed={mode === "sell"}
             onClick={() => setMode("sell")}
           >
-            List a demo seat
+            Seller quote
           </button>
         </div>
         <form onSubmit={placeOrder}>
           <label htmlFor="bid">
-            {mode === "buy"
-              ? "Your paper bid (USD)"
-              : "Illustrative asking price (USD)"}
+            {mode === "buy" ? "Your bid (USD)" : "Asking price (USD)"}
           </label>
           <input
             id="bid"
@@ -732,7 +717,7 @@ export default function Marketplace() {
             onChange={(event) => setBid(event.target.value)}
           />
           <div className="order-summary">
-            <span>Illustrative sale price</span>
+            <span>Sale price</span>
             <b>{money(Number(bid) || 0)}</b>
             <span>Proposed service fee · 10%</span>
             <b>{money((Number(bid) || 0) * 0.1)}</b>
@@ -743,7 +728,7 @@ export default function Marketplace() {
           </div>
           {mode === "buy" && (
             <label className="handoff-label">
-              Simulated handoff outcome
+              Calculate settlement if
               <select
                 value={handoff}
                 onChange={(event) =>
@@ -763,21 +748,19 @@ export default function Marketplace() {
               Proposed flow: hold buyer funds → seller releases → buyer reserves
               → verify → pay seller less 10%. If reservation fails: refund buyer
               in full; no payout or fee. Release does not guarantee acquisition.
-              This prototype holds no funds and executes no bookings.
             </p>
           </div>
           <p className="transaction-note">
-            This records a simulated {mode === "buy" ? "bid" : "listing"} in
-            this browser session only. You are not purchasing, reserving, or
-            selling a conference seat. No payment information is collected.
-            Account usernames and password hashes are stored separately.
+            Trading is not open. Inventory and prices are illustrative; escrow
+            and booking are not activated. Saving a quote records it for this
+            browser session.
           </p>
           <button className="primary confirm" type="submit">
             {!user
               ? "Create an account to continue"
               : mode === "buy"
-                ? "Run handoff simulation"
-                : "Create demo listing"}{" "}
+                ? "Save quote"
+                : "Save seller quote"}{" "}
             ↗
           </button>
         </form>
@@ -806,7 +789,7 @@ export default function Marketplace() {
           <div>
             <p className="transaction-note">
               Your account is real. Marketplace inventory, handoffs, escrow, and
-              payouts are simulated. Your paper trades reset on reload.
+              payouts are not activated. Your quotes reset on reload.
             </p>
             <button
               className="primary confirm"
@@ -882,7 +865,7 @@ export default function Marketplace() {
                   Your account stores a username and a protected password hash.
                   No email or AWS credentials required. Save your password:
                   email recovery is not available. You can delete your account
-                  at any time. Trading and escrow remain simulations.
+                  at any time.
                 </p>
               )}
               <button

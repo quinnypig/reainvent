@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 const description =
-  "The speculative secondary market for conference seats. A working satire about agent-powered reservations. No real seats, payments, or bookings.";
+  "re:Sell — the conference seat exchange. Your next breakthrough. At market price.";
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL || "https://reainvent.com",

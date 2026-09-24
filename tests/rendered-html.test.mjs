@@ -18,8 +18,8 @@ test("serves the public marketplace without login or audit metadata", async () =
   const html = await response.text();
   assert.match(html, /re:Sell/);
   assert.match(html, /At market price/);
-  assert.match(html, /MARKET SIMULATION/);
-  assert.match(html, /No real reservations, transactions, or transfers/);
+  assert.match(html, /THE CONFERENCE SEAT EXCHANGE/);
+  assert.match(html, /Trading is not open/);
   assert.doesNotMatch(
     html,
     /Pangram|AI-writing signal|catalog audit|og-reainvent|\/data\.json/i,
