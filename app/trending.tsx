@@ -92,7 +92,7 @@ export default function Trending() {
       <div className="section-heading">
         <div>
           <p className="eyebrow">REAL SESSIONS · REAINVENT INTEREST</p>
-          <h2>Trending on reAInvent</h2>
+          <h2>Trending on re:AInvent</h2>
         </div>
         <span className="trend-live">
           {loaded && !error ? "Updates every minute" : "Collecting interest"}
@@ -243,7 +243,7 @@ export default function Trending() {
       <details className="trend-method">
         <summary>How are these trends measured?</summary>
         <p>
-          Watch buttons add interest signals on reAInvent. We count at most one
+          Watch buttons add interest signals on re:AInvent. We count at most one
           signal per session, per network, per UTC day, so repeated clicks don’t
           inflate the chart. Shared networks may count as one. Rankings use the
           last seven calendar days; today is still in progress. These signals

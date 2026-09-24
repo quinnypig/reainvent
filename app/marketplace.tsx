@@ -162,8 +162,8 @@ export default function Marketplace() {
         <a href="#timeline">See the timeline ↗</a>
       </div>
       <header className="header">
-        <Link className="wordmark" href="/" aria-label="reAInvent home">
-          re<b>AI</b>nvent
+        <Link className="wordmark" href="/" aria-label="re:AInvent home">
+          re:<b>AI</b>nvent
           <span>↗</span>
         </Link>
         <nav aria-label="Main navigation">
@@ -414,7 +414,7 @@ export default function Marketplace() {
               <span className="timeline-date">NOW</span>
               <h3>Build your shortlist</h3>
               <p>
-                Browse AWS’s session catalog and save favorites. On reAInvent,
+                Browse AWS’s session catalog and save favorites. On re:AInvent,
                 explore sample prices and calculate a potential sale’s
                 contribution to your trip.
               </p>
@@ -452,7 +452,7 @@ export default function Marketplace() {
             </article>
           </div>
           <p className="timeline-note">
-            These are AWS’s booking dates, not a reAInvent trading launch date.
+            These are AWS’s booking dates, not a re:AInvent trading launch date.
             Exact opening times aren’t listed here; check your AWS attendee
             account for details.
           </p>
@@ -647,10 +647,10 @@ export default function Marketplace() {
             </p>
           </details>
           <details>
-            <summary>Does October 8 mean reAInvent trading opens?</summary>
+            <summary>Does October 8 mean re:AInvent trading opens?</summary>
             <p>
               No. October 8 is the opening date for AI-assisted booking through
-              AWS. reAInvent’s buying and selling launch date hasn’t been
+              AWS. re:AInvent’s buying and selling launch date hasn’t been
               announced.
             </p>
           </details>
@@ -666,11 +666,11 @@ export default function Marketplace() {
       </main>
       <footer>
         <Link className="wordmark" href="/">
-          re<b>AI</b>nvent
+          re:<b>AI</b>nvent
           <span>↗</span>
         </Link>
         <p>Your agent. Your seats. Your travel fund.</p>
-        <span>reAInvent · 2026</span>
+        <span>re:AInvent · 2026</span>
       </footer>
       <div className="toast" role="status" aria-live="polite">
         {notice && (

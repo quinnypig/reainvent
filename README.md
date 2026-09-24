@@ -1,4 +1,4 @@
-# reAInvent
+# re:AInvent
 
 A planned marketplace for individual re:Invent session reservations at https://reainvent.com. Buyers seek reservations for sessions they want; sellers use AI to identify and reserve in-demand sessions and offer them for resale to help cover their trip. Both need their own conference registration.
 
