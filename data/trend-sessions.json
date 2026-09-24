@@ -1,0 +1,60 @@
+{
+  "eventId": "reinvent2026",
+  "updatedAt": "2026-09-24T00:59:56.282Z",
+  "sessions": [
+    {
+      "id": "1780441463424001GYFh",
+      "code": "AIM212",
+      "title": "Best practices to build, connect and optimize agents on AgentCore",
+      "level": "200 – Intermediate",
+      "type": "Breakout session",
+      "venue": "MGM Grand",
+      "date": "2026-12-02"
+    },
+    {
+      "id": "1780441463482001GyjH",
+      "code": "AIM303",
+      "title": "Building enterprise agent platform on AgentCore",
+      "level": "300 – Advanced",
+      "type": "Breakout session",
+      "venue": "MGM Grand",
+      "date": "2026-12-02"
+    },
+    {
+      "id": "1780441463540001Gm13",
+      "code": "AIM307",
+      "title": "Turn your coding agent into an always-on dev team with AgentCore",
+      "level": "300 – Advanced",
+      "type": "Breakout session",
+      "venue": "MGM Grand",
+      "date": "2026-12-02"
+    },
+    {
+      "id": "1780441464697001GwWk",
+      "code": "AIM370",
+      "title": "Trusting agents in production: end-to-end security with AgentCore",
+      "level": "300 – Advanced",
+      "type": "Breakout session",
+      "venue": "MGM Grand",
+      "date": "2026-11-30"
+    },
+    {
+      "id": "1780441475769001GPb1",
+      "code": "IND3342",
+      "title": "How Stripe built an enterprise agent platform on Amazon Bedrock AgentCore",
+      "level": "300 – Advanced",
+      "type": "Breakout session",
+      "venue": "",
+      "date": "2026-12-02"
+    },
+    {
+      "id": "1780441479778001GpML",
+      "code": "OPN301",
+      "title": "Governing AI assets at scale with MCP Gateway and Registry",
+      "level": "300 – Advanced",
+      "type": "Breakout session",
+      "venue": "Caesars Forum",
+      "date": "2026-12-03"
+    }
+  ]
+}

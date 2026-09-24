@@ -1,5 +1,6 @@
 "use client";
 
+import Trending from "./trending";
 import Link from "next/link";
 import { useAccount } from "./managed-auth";
 import { useRef, useState } from "react";
@@ -166,6 +167,7 @@ export default function Marketplace() {
           <span>↗</span>
         </Link>
         <nav aria-label="Main navigation">
+          <a href="#trending">Trending</a>
           <a href="#market">Marketplace</a>
           <a href="#how">How it works</a>
           <a href="#timeline">Key dates</a>
@@ -290,12 +292,12 @@ export default function Marketplace() {
         <section className="metrics" aria-label="Booking dates and seller fees">
           <div>
             <span>DIRECT AWS BOOKING</span>
-            <strong>Oct 4</strong>
+            <strong>Oct 6</strong>
             <small>Book through AWS’s website or app.</small>
           </div>
           <div>
             <span>AI-ASSISTED AWS BOOKING</span>
-            <strong>Oct 6</strong>
+            <strong>Oct 8</strong>
             <small>Booking through MCP opens two days later.</small>
           </div>
           <div>
@@ -309,6 +311,7 @@ export default function Marketplace() {
             <small>$90 to you on a $100 sale.</small>
           </div>
         </section>
+        <Trending />
         <section id="how" className="getting-started">
           <p className="eyebrow">START HERE</p>
           <h2>
@@ -364,7 +367,7 @@ export default function Marketplace() {
                   <p>
                     Use an assistant to identify sessions people may want and
                     request reservations through AWS on your own registration.
-                    AI-assisted booking opens October 6.
+                    AI-assisted booking opens October 8.
                   </p>
                 </li>
                 <li>
@@ -417,8 +420,8 @@ export default function Marketplace() {
               </p>
             </article>
             <article>
-              <time className="timeline-date" dateTime="2026-10-04">
-                OCTOBER 4
+              <time className="timeline-date" dateTime="2026-10-06">
+                OCTOBER 6
               </time>
               <h3>Book directly with AWS</h3>
               <p>
@@ -428,8 +431,8 @@ export default function Marketplace() {
               </p>
             </article>
             <article>
-              <time className="timeline-date" dateTime="2026-10-06">
-                OCTOBER 6
+              <time className="timeline-date" dateTime="2026-10-08">
+                OCTOBER 8
               </time>
               <h3>AI-assisted booking opens</h3>
               <p>
@@ -454,11 +457,11 @@ export default function Marketplace() {
             account for details.
           </p>
           <a
-            href="https://aws.amazon.com/events/reinvent/faqs/"
+            href="https://docs.aws.amazon.com/events/latest/devguide/what-is-events-api.html"
             target="_blank"
             rel="noreferrer"
           >
-            AWS registration and session details ↗
+            AWS booking dates and API details ↗
           </a>
         </section>
         <section id="market" className="market-section">
@@ -574,7 +577,7 @@ export default function Marketplace() {
                 <p>
                   An AI assistant can help identify sessions to reserve and
                   offer for sale. AWS’s MCP connection enables AI-assisted
-                  booking from October 6.
+                  booking from October 8.
                 </p>
                 <button onClick={() => setAgent((value) => !value)}>
                   {agent ? "Hide the steps" : "See the AI booking steps"}{" "}
@@ -644,9 +647,9 @@ export default function Marketplace() {
             </p>
           </details>
           <details>
-            <summary>Does October 6 mean reAInvent trading opens?</summary>
+            <summary>Does October 8 mean reAInvent trading opens?</summary>
             <p>
-              No. October 6 is the opening date for AI-assisted booking through
+              No. October 8 is the opening date for AI-assisted booking through
               AWS. reAInvent’s buying and selling launch date hasn’t been
               announced.
             </p>

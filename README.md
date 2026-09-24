@@ -25,7 +25,7 @@ Clerk owns signup, login, email verification, recovery, sessions, profile editin
 
 For development, put test keys in ignored `.dev.vars`; optionally set `AUTH_DEV_ORIGIN` to your exact development origin for backend session verification. Never commit secret keys. `/api/auth/config` exposes only the publishable key. `/api/account` uses Clerk's backend SDK to verify session tokens and restrict authorized origins. Legacy password endpoints return 410. Unconfigured authentication shows a temporary-unavailability message; the marketplace stays public.
 
-No local passwords or auth tokens are stored. The former D1 database and historical migrations are retained but are no longer bound to the Worker or provisioned by deployment. No existing database was deleted.
+No local passwords or auth tokens are stored. The former D1 database is reused through the TREND_DB binding for session-interest counts only. Historical account tables are not read. Deployment applies the separate migrations/trends migration directory. No existing database was deleted.
 
 ## Deployment
 
@@ -34,3 +34,9 @@ Push to `main` or manually run **Deploy marketplace** after configuring the exis
 ## Retired audit
 
 The prior audit source, snapshot, and images remain under `archive/`, outside public assets and routes. Old data, image, and audit URLs are blocked even if stale assets remain. Catalog refresh scheduling and Pangram scoring in CI are disabled. The optional legacy `npm run update` writes only to `archive/catalog-private.json`; do not import archived files into application routes or public assets.
+
+## Trending sessions
+
+A curated selection from the live AWS Events MCP catalog is stored in data/trend-sessions.json using an explicit field allowlist. No audit scores or attendee data are included. /api/trends records watch signals and serves seven daily and 24 hourly buckets. Rankings count the last seven UTC calendar days, including the partial current day. Each network contributes at most one signal per session per UTC day; raw IPs are not stored. Daily hashes and old events are cleaned up on new activity after eight days. The chart measures onsite interest, not AWS popularity, availability, prices, or forecasts. There is no seeded history.
+
+AWS booking dates use the developer guide: direct October 6, 2026, API/MCP October 8, 2026.

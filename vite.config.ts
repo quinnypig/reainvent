@@ -8,6 +8,14 @@ const devHost = process.env.DEV_HOST;
 const localBindingConfig = {
   main: "./worker/index.ts",
   name: "reainvent",
+  d1_databases: [
+    {
+      binding: "TREND_DB",
+      database_name: "resell-accounts",
+      database_id: "0eba5063-9ff7-40c0-83f7-f1b79dca503f",
+      migrations_dir: "./migrations/trends",
+    },
+  ],
   compatibility_flags: ["nodejs_compat"],
   routes: [{ pattern: "reainvent.com", custom_domain: true }],
   assets: { binding: "ASSETS", run_worker_first: true },

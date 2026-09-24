@@ -1,7 +1,9 @@
+import { trendsRequest } from "./trends.mjs";
 import { accountRequest } from "./accounts.mjs";
 import handler from "vinext/server/app-router-entry";
 interface Env {
   ASSETS: { fetch(request: Request): Promise<Response> };
+  TREND_DB?: unknown;
   CLERK_PUBLISHABLE_KEY?: string;
   CLERK_SECRET_KEY?: string;
   AUTH_DEV_ORIGIN?: string;
@@ -34,6 +36,16 @@ export default {
     ctx: ExecutionContext,
   ): Promise<Response> {
     const url = new URL(request.url);
+    if (url.pathname === "/api/trends") {
+      try {
+        return await trendsRequest(request, env.TREND_DB);
+      } catch {
+        return Response.json(
+          { error: "Session interest is temporarily unavailable." },
+          { status: 503, headers: { "cache-control": "no-store" } },
+        );
+      }
+    }
     if (
       url.pathname.startsWith("/api/account") ||
       url.pathname.startsWith("/api/auth/")

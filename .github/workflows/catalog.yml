@@ -25,6 +25,7 @@ jobs:
       - name: Deploy to Cloudflare Workers
         if: env.CLOUDFLARE_API_TOKEN != ''
         run: |
+          npx wrangler d1 migrations apply TREND_DB --remote --config dist/server/wrangler.json
           npx wrangler deploy --config dist/server/wrangler.json
         env:
           CLOUDFLARE_ACCOUNT_ID: e857c740cc49dc71df4e5a92c4aa007b

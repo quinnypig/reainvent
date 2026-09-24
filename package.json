@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext dev",
     "build": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext build",
-    "deploy:cloudflare": "npm run build && wrangler deploy --config dist/server/wrangler.json",
+    "deploy:cloudflare": "npm run build && wrangler d1 migrations apply TREND_DB --remote --config dist/server/wrangler.json && wrangler deploy --config dist/server/wrangler.json",
     "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
     "update": "node scripts/update-catalog.mjs",
     "test": "npm run build && node --test tests/*.test.mjs",
