@@ -202,7 +202,7 @@ export default function Marketplace() {
           <i /> THE CONFERENCE SEAT EXCHANGE
         </span>
         <span>Your agent. Your seats. Your travel fund.</span>
-        <a href="#thesis">Read the thesis ↗</a>
+        <a href="#timeline">See the timeline ↗</a>
       </div>
       <header className="header">
         <Link className="wordmark" href="/" aria-label="reAInvent home">
@@ -212,7 +212,7 @@ export default function Marketplace() {
         <nav aria-label="Main navigation">
           <a href="#market">Marketplace</a>
           <a href="#how">How it works</a>
-          <a href="#thesis">Why this exists</a>
+          <a href="#timeline">Key dates</a>
         </nav>
         <button
           className="account-button"
@@ -328,27 +328,190 @@ export default function Marketplace() {
             </div>
           </div>
         </section>
-        <section className="metrics" aria-label="Market premise">
+        <section className="metrics" aria-label="Booking dates and seller fees">
           <div>
-            <span>THE UNDERLYING ASSET</span>
-            <strong>A chair.</strong>
-            <small>Now with a convenience premium.</small>
+            <span>DIRECT AWS BOOKING</span>
+            <strong>Oct 4</strong>
+            <small>Book through AWS’s website or app.</small>
           </div>
           <div>
-            <span>ADMISSION REQUIREMENT</span>
-            <strong>An agent.</strong>
-            <small>To learn how to build an agent.</small>
+            <span>AI-ASSISTED AWS BOOKING</span>
+            <strong>Oct 6</strong>
+            <small>Booking through MCP opens two days later.</small>
           </div>
           <div>
-            <span>ACTUAL TRANSACTIONS</span>
-            <strong>Zero.</strong>
-            <small>Let’s keep this hypothetical.</small>
+            <span>PROPOSED SERVICE FEE</span>
+            <strong>10%</strong>
+            <small>Applied only to a successful sale.</small>
           </div>
           <div>
-            <span>MARKET STATUS</span>
-            <strong className="green">Entirely avoidable.</strong>
-            <small>There is still time to design for people.</small>
+            <span>PROPOSED SELLER SHARE</span>
+            <strong className="green">90%</strong>
+            <small>$90 to you on a $100 sale.</small>
           </div>
+        </section>
+        <section id="how" className="getting-started">
+          <p className="eyebrow">START HERE</p>
+          <h2>
+            A seat for your schedule.
+            <br />A contribution to your trip.
+          </h2>
+          <p className="section-intro">
+            reAInvent brings buyers and sellers together around in-demand
+            conference sessions. Buyers look for a session they want to attend.
+            Sellers price a reservation they’re willing to give up. AI helps
+            with discovery and planning.
+          </p>
+          <div className="journey-grid">
+            <article>
+              <span className="eyebrow">I WANT A SEAT</span>
+              <h3>For buyers</h3>
+              <ol>
+                <li>
+                  <strong>Find your session.</strong>
+                  <p>
+                    Browse by topic and compare prices. Check the date, time,
+                    and venue against your conference plans.
+                  </p>
+                </li>
+                <li>
+                  <strong>Review the total.</strong>
+                  <p>
+                    Choose a price and review the quote before committing.
+                    You’ll need your own re:Invent registration to attend.
+                  </p>
+                </li>
+                <li>
+                  <strong>Get a confirmed reservation.</strong>
+                  <p>
+                    The planned handoff releases the seller’s reservation and
+                    attempts to book it for you. Payment would settle only after
+                    your reservation is confirmed.
+                  </p>
+                </li>
+              </ol>
+              <a className="primary" href="#market">
+                Explore sessions ↗
+              </a>
+            </article>
+            <article>
+              <span className="eyebrow">I HAVE A SEAT</span>
+              <h3>For sellers</h3>
+              <ol>
+                <li>
+                  <strong>Choose a reservation.</strong>
+                  <p>
+                    Start with a session you’ve reserved and are willing to give
+                    up. A favorite or a place on your wish list isn’t a reserved
+                    seat.
+                  </p>
+                </li>
+                <li>
+                  <strong>Set your asking price.</strong>
+                  <p>
+                    See what you’d receive after the proposed 10% service fee. A
+                    $100 sale would contribute $90 toward your trip.
+                  </p>
+                </li>
+                <li>
+                  <strong>Complete the handoff.</strong>
+                  <p>
+                    Under the planned flow, your payout follows confirmation of
+                    the buyer’s reservation. If the buyer doesn’t get the seat,
+                    there’s no payout or service fee.
+                  </p>
+                </li>
+              </ol>
+              <button
+                className="primary"
+                onClick={() => openTrade(listings[0], "sell")}
+              >
+                Calculate seller proceeds ↗
+              </button>
+            </article>
+          </div>
+          <div className="handoff-explainer">
+            <h3>What happens if the handoff fails?</h3>
+            <p>
+              AWS doesn’t offer a direct seat-transfer feature. Once a seller
+              releases a seat, another attendee may reserve it first. The
+              proposed payment flow would refund the buyer in full if their
+              booking fails. The seller could lose the original reservation;
+              getting it back isn’t guaranteed.
+            </p>
+          </div>
+        </section>
+        <section id="timeline" className="booking-timeline">
+          <p className="eyebrow">YOUR 2026 PLANNING TIMELINE</p>
+          <h2>People first. AI two days later.</h2>
+          <div className="timeline-grid">
+            <article>
+              <span className="timeline-date">NOW</span>
+              <h3>Build your shortlist</h3>
+              <p>
+                Browse AWS’s session catalog and save favorites. On reAInvent,
+                explore sample prices and calculate a potential sale’s
+                contribution to your trip.
+              </p>
+            </article>
+            <article>
+              <time className="timeline-date" dateTime="2026-10-04">
+                OCTOBER 4
+              </time>
+              <h3>Book directly with AWS</h3>
+              <p>
+                Session reservations open for people booking through AWS’s
+                attendee website or app. This gives direct booking a two-day
+                head start.
+              </p>
+            </article>
+            <article>
+              <time className="timeline-date" dateTime="2026-10-06">
+                OCTOBER 6
+              </time>
+              <h3>AI-assisted booking opens</h3>
+              <p>
+                Booking through the AWS Events MCP server opens. MCP is the
+                connection that lets an AI assistant use AWS’s event tools on
+                your behalf. You’ll need to sign in with the AWS Builder ID
+                linked to your registration.
+              </p>
+            </article>
+            <article>
+              <span className="timeline-date">NOVEMBER 30 – DECEMBER 4</span>
+              <h3>See you in Las Vegas</h3>
+              <p>
+                Attend re:Invent 2026. Leave time between sessions to travel
+                between venues.
+              </p>
+            </article>
+          </div>
+          <p className="timeline-note">
+            These are AWS’s booking dates, not a reAInvent trading launch date.
+            Exact opening times aren’t listed here; check your AWS attendee
+            account for details.
+          </p>
+          <a
+            href="https://aws.amazon.com/events/reinvent/faqs/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            AWS registration and session details ↗
+          </a>
+        </section>
+        <section className="availability-panel">
+          <div>
+            <p className="eyebrow">WHAT YOU CAN DO TODAY</p>
+            <h2>Explore now. Plan your next move.</h2>
+            <p>
+              Browse the example listings, star sessions for this visit, and use
+              the quote calculator. Purchases, seller payouts, and reservation
+              handoffs aren’t open yet.
+            </p>
+          </div>
+          <a className="primary" href="#market">
+            Browse the marketplace ↗
+          </a>
         </section>
         <section id="market" className="market-section">
           <div className="section-heading">
@@ -474,8 +637,8 @@ export default function Marketplace() {
                   Your agent is here to earn.
                 </h3>
                 <p>
-                  Why wait in line when you can illustrate the consequences of
-                  bypassing it?
+                  See how an assistant could compare sessions and help you plan.
+                  AI-assisted booking through AWS opens October 6.
                 </p>
                 <button onClick={() => setAgent((value) => !value)}>
                   {agent ? "Pause agent preview" : "Preview agent mode"}{" "}
@@ -487,10 +650,10 @@ export default function Marketplace() {
                 {agent && (
                   <div className="agent-output">
                     <p>01 → Scan inventory</p>
-                    <p>02 → Rank by invented premium</p>
+                    <p>02 → Compare example prices</p>
                     <p>03 → AIM401 leads at $650</p>
                     <p className="positive">
-                      04 → Reserve nothing. Make a point.
+                      04 → Review your options before booking.
                     </p>
                   </div>
                 )}
@@ -502,8 +665,8 @@ export default function Marketplace() {
                 </div>
                 {orders.length === 0 ? (
                   <p>
-                    No activity yet. Preview a trade to try the market. No money
-                    or seats change hands.
+                    Your quotes will appear here. Choose a session to compare
+                    the asking price and seller proceeds.
                   </p>
                 ) : (
                   <ul>
@@ -524,37 +687,6 @@ export default function Marketplace() {
               </div>
             </aside>
           </div>
-        </section>
-        <section id="how" className="how">
-          <div>
-            <p className="eyebrow">A NEW LINE IN YOUR TRAVEL BUDGET</p>
-            <h2>
-              Put your agent
-              <br />
-              on expenses.
-            </h2>
-          </div>
-          <article>
-            <span>01 / DISCOVER</span>
-            <h3>Find a session.</h3>
-            <p>Use AI to spot the sessions everyone wants to attend.</p>
-          </article>
-          <article>
-            <span>02 / SPECULATE</span>
-            <h3>Price the privilege.</h3>
-            <p>
-              Compare asking prices and see what a seat could contribute to your
-              trip.
-            </p>
-          </article>
-          <article>
-            <span>03 / SETTLE</span>
-            <h3>A cut above.</h3>
-            <p>
-              A proposed 10% service fee. Seller proceeds calculated before you
-              commit.
-            </p>
-          </article>
         </section>
         <section id="thesis" className="thesis">
           <span className="thesis-symbol" aria-hidden="true">
@@ -624,8 +756,8 @@ export default function Marketplace() {
         <span className="eyebrow">PRICE A SEAT</span>
         <h2 id="trade-title">
           {mode === "buy"
-            ? "Acquire an unfair advantage."
-            : "Become the middleman."}
+            ? "Review your buyer quote."
+            : "Calculate your seller proceeds."}
         </h2>
         <p className="dialog-session">
           {selected?.code} · {selected?.title}
@@ -684,9 +816,11 @@ export default function Marketplace() {
           <div className="escrow-preview">
             <strong>Escrow model · not activated</strong>
             <p>
-              Proposed flow: hold buyer funds → seller releases → buyer reserves
-              → verify → pay seller less 10%. If reservation fails: refund buyer
-              in full; no payout or fee. Release does not guarantee acquisition.
+              The proposed flow holds the buyer’s payment until their
+              reservation is confirmed, then pays the seller 90% of the sale
+              price. If booking fails, the buyer gets a full refund and the
+              seller receives no payout. A released seat may be taken by someone
+              else.
             </p>
           </div>
           <p className="transaction-note">

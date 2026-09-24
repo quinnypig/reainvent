@@ -1315,3 +1315,126 @@ button:disabled {
 .market-sidebar {
   min-width: 0;
 }
+
+.getting-started,
+.booking-timeline {
+  padding: 64px 5%;
+  border-top: 1px solid var(--line, #d9ddd3);
+  scroll-margin-top: 24px;
+}
+.getting-started h2,
+.booking-timeline h2,
+.availability-panel h2 {
+  font-size: clamp(30px, 4vw, 48px);
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  margin: 14px 0 24px;
+}
+.section-intro {
+  max-width: 780px;
+  font-size: 18px;
+  line-height: 1.7;
+}
+.journey-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+  margin-top: 36px;
+}
+.journey-grid article {
+  border: 1px solid #d9ddd3;
+  padding: 30px;
+  border-radius: 12px;
+  background: #fffef8;
+}
+.journey-grid h3 {
+  font-size: 28px;
+  margin: 12px 0 24px;
+}
+.journey-grid ol {
+  padding-left: 24px;
+}
+.journey-grid li {
+  padding-left: 8px;
+  margin-bottom: 24px;
+}
+.journey-grid p,
+.handoff-explainer p,
+.timeline-grid p,
+.availability-panel p {
+  line-height: 1.65;
+  color: #52604f;
+}
+.journey-grid li p {
+  margin-top: 6px;
+}
+.handoff-explainer {
+  max-width: 880px;
+  margin-top: 32px;
+}
+.handoff-explainer h3 {
+  font-size: 21px;
+}
+.booking-timeline {
+  background: #eaf0e4;
+}
+.timeline-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px;
+  margin: 36px 0;
+}
+.timeline-date {
+  display: block;
+  font: 600 13px/1.6 monospace;
+  color: #35572a;
+}
+.timeline-grid h3 {
+  font-size: 21px;
+  margin: 16px 0 12px;
+}
+.timeline-note {
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 840px;
+}
+.booking-timeline > a {
+  display: inline-block;
+  margin-top: 12px;
+  text-decoration: underline;
+}
+.availability-panel {
+  padding: 42px 5%;
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  justify-content: space-between;
+}
+.availability-panel > div {
+  max-width: 780px;
+}
+.availability-panel > a {
+  flex-shrink: 0;
+}
+@media (max-width: 850px) {
+  .timeline-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .availability-panel {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+@media (max-width: 580px) {
+  .journey-grid,
+  .timeline-grid {
+    grid-template-columns: 1fr;
+  }
+  .journey-grid article {
+    padding: 24px;
+  }
+  .getting-started,
+  .booking-timeline {
+    padding: 44px 5%;
+  }
+}

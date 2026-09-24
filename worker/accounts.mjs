@@ -28,13 +28,19 @@ export async function accountRequest(
     return configured
       ? json({ publishableKey: env.CLERK_PUBLISHABLE_KEY })
       : json(
-          { error: "Sign-in is being configured. Please check back shortly." },
+          {
+            error:
+              "Account signup is coming soon. You can explore the marketplace now.",
+          },
           503,
         );
   if (path !== "/api/account") return json({ error: "Not found." }, 404);
   if (!configured)
     return json(
-      { error: "Sign-in is being configured. Please check back shortly." },
+      {
+        error:
+          "Account signup is coming soon. You can explore the marketplace now.",
+      },
       503,
     );
   const client = createClient({
