@@ -2,7 +2,9 @@ import { accountRequest } from "./accounts.mjs";
 import handler from "vinext/server/app-router-entry";
 interface Env {
   ASSETS: { fetch(request: Request): Promise<Response> };
-  DB?: unknown;
+  CLERK_PUBLISHABLE_KEY?: string;
+  CLERK_SECRET_KEY?: string;
+  AUTH_DEV_ORIGIN?: string;
 }
 interface ExecutionContext {
   waitUntil(promise: Promise<unknown>): void;
@@ -32,9 +34,12 @@ export default {
     ctx: ExecutionContext,
   ): Promise<Response> {
     const url = new URL(request.url);
-    if (url.pathname.startsWith("/api/account")) {
+    if (
+      url.pathname.startsWith("/api/account") ||
+      url.pathname.startsWith("/api/auth/")
+    ) {
       try {
-        return await accountRequest(request, env.DB);
+        return await accountRequest(request, env);
       } catch {
         return Response.json(
           { error: "Account service temporarily unavailable." },

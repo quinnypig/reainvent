@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useAccount } from "./managed-auth";
+import { useRef, useState } from "react";
 
 type Listing = {
   code: string;
@@ -130,76 +131,13 @@ export default function Marketplace() {
   >([]);
   const [notice, setNotice] = useState("");
   const [agent, setAgent] = useState(false);
-  const [user, setUser] = useState<{ username: string } | null>(null);
-  const [authMode, setAuthMode] = useState<"signup" | "login">("signup");
-  const [authError, setAuthError] = useState("");
-  const [authBusy, setAuthBusy] = useState(false);
+  const {
+    user,
+    ready: accountReady,
+    error: accountError,
+    openAccount,
+  } = useAccount();
   const [handoff, setHandoff] = useState<"success" | "failure">("success");
-  const accountDialog = useRef<HTMLDialogElement>(null);
-  useEffect(() => {
-    fetch("/api/account")
-      .then(async (response) => {
-        if (!response.ok) throw new Error();
-        const data = await response.json();
-        setUser(data.user);
-      })
-      .catch(() => setUser(null));
-  }, []);
-  async function authenticate(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setAuthBusy(true);
-    setAuthError("");
-    const form = new FormData(event.currentTarget);
-    try {
-      const response = await fetch(`/api/account/${authMode}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: form.get("username"),
-          password: form.get("password"),
-        }),
-      });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error || "Unable to sign in.");
-      setUser(result.user);
-      accountDialog.current?.close();
-      setNotice(`Welcome, ${result.user.username}. Your account is active.`);
-    } catch (error) {
-      setAuthError(
-        error instanceof Error ? error.message : "Unable to connect.",
-      );
-    } finally {
-      setAuthBusy(false);
-    }
-  }
-  async function accountAction(action: "logout" | "delete") {
-    setAuthBusy(true);
-    setAuthError("");
-    try {
-      const response = await fetch(`/api/account/${action}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: "{}",
-      });
-      if (!response.ok)
-        throw new Error("Could not update your account. Try again.");
-      setUser(null);
-      accountDialog.current?.close();
-      setOrders([]);
-      setWatchlist([]);
-      setNotice(
-        action === "delete"
-          ? "Your account and sign-in sessions were deleted."
-          : "You have been signed out.",
-      );
-    } catch (error) {
-      setAuthError(
-        error instanceof Error ? error.message : "Unable to connect.",
-      );
-    } finally {
-      setAuthBusy(false);
-    }
-  }
   const dialog = useRef<HTMLDialogElement>(null);
   const visible = listings
     .filter(
@@ -239,8 +177,9 @@ export default function Marketplace() {
       return;
     if (!user) {
       dialog.current?.close();
-      setAuthError("");
-      accountDialog.current?.showModal();
+      if (accountError) setNotice(accountError);
+      else if (accountReady) openAccount();
+      else setNotice("Sign-in is loading. Please try again in a moment.");
       return;
     }
     setOrders((previous) => [
@@ -262,12 +201,12 @@ export default function Marketplace() {
         <span>
           <i /> THE CONFERENCE SEAT EXCHANGE
         </span>
-        <span>Supply. Demand. A place to sit.</span>
+        <span>Your agent. Your seats. Your travel fund.</span>
         <a href="#thesis">Read the thesis ↗</a>
       </div>
       <header className="header">
-        <Link className="wordmark" href="/" aria-label="re:Sell home">
-          re:<b>Sell</b>
+        <Link className="wordmark" href="/" aria-label="reAInvent home">
+          re<b>AI</b>nvent
           <span>↗</span>
         </Link>
         <nav aria-label="Main navigation">
@@ -278,11 +217,12 @@ export default function Marketplace() {
         <button
           className="account-button"
           onClick={() => {
-            setAuthError("");
-            accountDialog.current?.showModal();
+            if (accountError) setNotice(accountError);
+            else if (accountReady) openAccount();
+            else setNotice("Sign-in is loading. Please try again in a moment.");
           }}
         >
-          {user ? `@${user.username}` : "Sign up / Log in"}
+          {user ? user.username : "Sign up / Log in"}
         </button>
         <button
           className="sell-button"
@@ -292,7 +232,7 @@ export default function Marketplace() {
         </button>
       </header>
       <div className="ticker" aria-label="Illustrative market prices">
-        <span className="ticker-label">THE LEARNING ECONOMY</span>
+        <span className="ticker-label">THE TRIP ECONOMY</span>
         {listings.slice(0, 4).map((item) => (
           <span key={item.code}>
             <b>{item.code}</b> {money(item.price)} <em>↗ {item.change}%</em>
@@ -308,29 +248,27 @@ export default function Marketplace() {
               2026
             </p>
             <h1>
-              Your next
+              The trip costs.
               <br />
-              breakthrough.
-              <br />
-              <span>At market price.</span>
+              <span>Put AI to work.</span>
             </h1>
             <p className="hero-description">
-              The conference is for everyone.
+              Use AI to find in-demand sessions and price your seats.
               <br />
-              The good seats are for the highest bidder.
+              Turn conference demand into a plan to subsidize your trip.
             </p>
             <div className="hero-actions">
               <a className="primary" href="#market">
                 Explore the market <span>↗</span>
               </a>
               <span className="hero-aside">
-                Learning has a new
+                Flights. Hotels. Conference passes.
                 <br />
-                price discovery mechanism.
+                Give your agent a stretch goal.
               </span>
             </div>
             <p className="hero-footnote">
-              Conference access meets price discovery.
+              Learn about AI. Put it on the travel budget.
             </p>
           </div>
           <div className="feature-wrap">
@@ -589,24 +527,25 @@ export default function Marketplace() {
         </section>
         <section id="how" className="how">
           <div>
-            <p className="eyebrow">AN ENTIRELY UNNECESSARY VALUE CHAIN</p>
+            <p className="eyebrow">A NEW LINE IN YOUR TRAVEL BUDGET</p>
             <h2>
-              From knowledge
+              Put your agent
               <br />
-              to asset class.
+              on expenses.
             </h2>
           </div>
           <article>
             <span>01 / DISCOVER</span>
             <h3>Find a session.</h3>
-            <p>
-              Someone wrote a talk to help you learn. We added a price chart.
-            </p>
+            <p>Use AI to spot the sessions everyone wants to attend.</p>
           </article>
           <article>
             <span>02 / SPECULATE</span>
             <h3>Price the privilege.</h3>
-            <p>Compare asking prices and calculate your potential return.</p>
+            <p>
+              Compare asking prices and see what a seat could contribute to your
+              trip.
+            </p>
           </article>
           <article>
             <span>03 / SETTLE</span>
@@ -651,11 +590,11 @@ export default function Marketplace() {
       </main>
       <footer>
         <Link className="wordmark" href="/">
-          re:<b>Sell</b>
+          re<b>AI</b>nvent
           <span>↗</span>
         </Link>
-        <p>Supply. Demand. A place to sit.</p>
-        <span>re:Sell · 2026</span>
+        <p>Your agent. Your seats. Your travel fund.</p>
+        <span>reAInvent · 2026</span>
       </footer>
       <div className="toast" role="status" aria-live="polite">
         {notice && (
@@ -764,129 +703,6 @@ export default function Marketplace() {
             ↗
           </button>
         </form>
-      </dialog>
-      <dialog
-        ref={accountDialog}
-        className="trade-dialog"
-        aria-labelledby="account-title"
-      >
-        <button
-          className="close-dialog"
-          aria-label="Close account dialog"
-          onClick={() => accountDialog.current?.close()}
-        >
-          ×
-        </button>
-        <span className="eyebrow">RE:SELL / EARLY ACCESS</span>
-        <h2 id="account-title">
-          {user
-            ? `Hello, ${user.username}.`
-            : authMode === "signup"
-              ? "Get a seat at the market."
-              : "Welcome back."}
-        </h2>
-        {user ? (
-          <div>
-            <p className="transaction-note">
-              Your account is real. Marketplace inventory, handoffs, escrow, and
-              payouts are not activated. Your quotes reset on reload.
-            </p>
-            <button
-              className="primary confirm"
-              disabled={authBusy}
-              onClick={() => accountAction("logout")}
-            >
-              Sign out
-            </button>
-            <details className="delete-account">
-              <summary>Delete my account</summary>
-              <p>
-                This permanently removes your username, password hash, and
-                sign-in sessions.
-              </p>
-              <button
-                disabled={authBusy}
-                onClick={() => accountAction("delete")}
-              >
-                Permanently delete account
-              </button>
-            </details>
-          </div>
-        ) : (
-          <>
-            <div className="mode-tabs">
-              <button
-                aria-pressed={authMode === "signup"}
-                onClick={() => {
-                  setAuthMode("signup");
-                  setAuthError("");
-                }}
-              >
-                Create account
-              </button>
-              <button
-                aria-pressed={authMode === "login"}
-                onClick={() => {
-                  setAuthMode("login");
-                  setAuthError("");
-                }}
-              >
-                Log in
-              </button>
-            </div>
-            <form onSubmit={authenticate}>
-              <label htmlFor="username">Username</label>
-              <input
-                id="username"
-                name="username"
-                autoComplete="username"
-                pattern="[a-zA-Z0-9_]{3,24}"
-                minLength={3}
-                maxLength={24}
-                placeholder="your_handle"
-                required
-              />
-              <label htmlFor="password" className="password-label">
-                Password · 12 characters minimum
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete={
-                  authMode === "signup" ? "new-password" : "current-password"
-                }
-                minLength={12}
-                maxLength={128}
-                required
-              />
-              {authMode === "signup" && (
-                <p className="transaction-note">
-                  Your account stores a username and a protected password hash.
-                  No email or AWS credentials required. Save your password:
-                  email recovery is not available. You can delete your account
-                  at any time.
-                </p>
-              )}
-              <button
-                className="primary confirm"
-                disabled={authBusy}
-                type="submit"
-              >
-                {authBusy
-                  ? "Connecting…"
-                  : authMode === "signup"
-                    ? "Create account ↗"
-                    : "Log in ↗"}
-              </button>
-            </form>
-          </>
-        )}
-        {authError && (
-          <p className="auth-error" role="alert">
-            {authError}
-          </p>
-        )}
       </dialog>
     </div>
   );

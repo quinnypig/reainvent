@@ -16,8 +16,8 @@ test("serves the public marketplace without login or audit metadata", async () =
   assert.equal(response.status, 200);
   assert.equal(response.headers.get("cache-control"), "no-store");
   const html = await response.text();
-  assert.match(html, /re:Sell/);
-  assert.match(html, /At market price/);
+  assert.match(html, /reAInvent/);
+  assert.match(html, /Put AI to work/);
   assert.match(html, /THE CONFERENCE SEAT EXCHANGE/);
   assert.match(html, /Trading is not open/);
   assert.doesNotMatch(
