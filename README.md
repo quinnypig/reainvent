@@ -1,6 +1,6 @@
 # reAInvent
 
-Use AI to help subsidize your conference trip. The public marketplace at https://reainvent.com explores session demand, pricing, and a travel-fund pitch.
+A planned marketplace for individual re:Invent session reservations at https://reainvent.com. Buyers seek reservations for sessions they want; sellers use AI to identify and reserve in-demand sessions and offer them for resale to help cover their trip. Both need their own conference registration.
 
 Inventory and market prices are illustrative. Quotes, watchlists, and the agent preview run in browser memory and reset on reload. Trading is not open: there is no payment processing, AWS booking connection, or seat transfer. The trade calculator models a 10% seller fee and successful or unsuccessful acquisition. Release-and-reserve is not an atomic transfer.
 

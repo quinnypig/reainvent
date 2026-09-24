@@ -1438,3 +1438,73 @@ button:disabled {
     padding: 44px 5%;
   }
 }
+
+.hero h1 {
+  font-size: clamp(44px, 4.7vw, 68px);
+  letter-spacing: -0.055em;
+}
+.hero-description p {
+  margin: 0 0 14px;
+}
+.preview-status {
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 22px 0;
+  max-width: 550px;
+  color: #52604f;
+}
+.secondary-action {
+  border: 1px solid #b7c1b1;
+  background: transparent;
+  padding: 16px;
+  color: #203429;
+  font: inherit;
+  cursor: pointer;
+}
+.sale-example {
+  margin: 34px 0;
+}
+.sale-example > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 0;
+  border-bottom: 1px solid #52604f;
+}
+.sale-example dd {
+  margin: 0;
+  font-weight: 600;
+  font-size: 25px;
+}
+.sale-example dt {
+  align-self: center;
+}
+.sale-example .seller-net {
+  color: #b9f56d;
+}
+.sale-example .seller-net dd {
+  font-size: 44px;
+}
+.common-questions details {
+  max-width: 900px;
+  padding: 20px 0;
+  border-bottom: 1px solid #d9ddd3;
+}
+.common-questions summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 18px;
+}
+.common-questions details p {
+  line-height: 1.65;
+  color: #52604f;
+  margin-top: 16px;
+}
+@media (max-width: 580px) {
+  .hero h1 {
+    font-size: 45px;
+  }
+  .hero-actions {
+    flex-wrap: wrap;
+  }
+}

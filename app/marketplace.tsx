@@ -12,81 +12,67 @@ type Listing = {
   day: string;
   time: string;
   price: number;
-  change: number;
-  seats: number;
   level: string;
 };
 const listings: Listing[] = [
   {
     code: "AGT101",
-    title: "Your first agent. Someone else’s fiftieth.",
+    title: "Getting started with AI agents",
     category: "Agents & AI",
     venue: "Venetian",
     day: "MON · NOV 30",
     time: "10:00 AM",
     price: 420,
-    change: 38.2,
-    seats: 3,
     level: "100 · Foundational",
   },
   {
     code: "SRV302",
-    title: "Serverless, except for the middleman",
+    title: "Building serverless applications",
     category: "Infrastructure",
     venue: "MGM Grand",
     day: "TUE · DEC 01",
     time: "11:30 AM",
     price: 185,
-    change: 12.4,
-    seats: 8,
     level: "300 · Advanced",
   },
   {
     code: "AIM401",
-    title: "Multi-agent systems. Single-seat availability.",
+    title: "Designing multi-agent systems",
     category: "Agents & AI",
     venue: "Caesars Forum",
     day: "WED · DEC 02",
     time: "2:00 PM",
     price: 650,
-    change: 64.8,
-    seats: 1,
     level: "400 · Expert",
   },
   {
     code: "DAT301",
-    title: "Eventually consistent. Immediately sold out.",
+    title: "Designing distributed databases",
     category: "Data & Analytics",
     venue: "Venetian",
     day: "TUE · DEC 01",
     time: "3:00 PM",
     price: 240,
-    change: 18.6,
-    seats: 5,
     level: "300 · Advanced",
   },
   {
     code: "CLD201",
-    title: "Cost optimization starts after this purchase",
+    title: "Optimizing your AWS costs",
     category: "Infrastructure",
     venue: "MGM Grand",
     day: "THU · DEC 03",
     time: "9:00 AM",
     price: 95,
-    change: -4.2,
-    seats: 12,
     level: "200 · Intermediate",
   },
   {
     code: "AGT202",
-    title: "Democratizing AI, subject to availability",
+    title: "Deploying AI applications",
     category: "Agents & AI",
     venue: "Caesars Forum",
     day: "THU · DEC 03",
     time: "1:00 PM",
     price: 310,
-    change: 26.1,
-    seats: 4,
     level: "200 · Intermediate",
   },
 ];
@@ -98,30 +84,10 @@ const categories = [
   "Data & Analytics",
   "Watchlist",
 ];
-function Sparkline({ down = false }: { down?: boolean }) {
-  return (
-    <svg
-      className={`spark ${down ? "down" : ""}`}
-      viewBox="0 0 100 32"
-      aria-hidden="true"
-    >
-      <path
-        d={
-          down
-            ? "M1 5L12 9L23 6L34 16L45 12L56 20L67 15L78 24L89 21L99 29"
-            : "M1 29L12 22L23 25L34 15L45 19L56 10L67 15L78 6L89 9L99 1"
-        }
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-      />
-    </svg>
-  );
-}
 export default function Marketplace() {
   const [category, setCategory] = useState("All sessions");
   const [query, setQuery] = useState("");
-  const [sort, setSort] = useState("trending");
+  const [sort, setSort] = useState("topic");
   const [watchlist, setWatchlist] = useState<string[]>([]);
   const [selected, setSelected] = useState<Listing | null>(null);
   const [mode, setMode] = useState<"buy" | "sell">("buy");
@@ -137,7 +103,6 @@ export default function Marketplace() {
     error: accountError,
     openAccount,
   } = useAccount();
-  const [handoff, setHandoff] = useState<"success" | "failure">("success");
   const dialog = useRef<HTMLDialogElement>(null);
   const visible = listings
     .filter(
@@ -155,7 +120,7 @@ export default function Marketplace() {
         ? a.price - b.price
         : sort === "high"
           ? b.price - a.price
-          : b.change - a.change,
+          : a.title.localeCompare(b.title),
     );
   function openTrade(item: Listing, action: "buy" | "sell" = "buy") {
     setSelected(item);
@@ -175,23 +140,14 @@ export default function Marketplace() {
     const amount = Number(bid);
     if (!selected || !Number.isFinite(amount) || amount < 1 || amount > 10000)
       return;
-    if (!user) {
-      dialog.current?.close();
-      if (accountError) setNotice(accountError);
-      else if (accountReady) openAccount();
-      else setNotice("Sign-in is loading. Please try again in a moment.");
-      return;
-    }
     setOrders((previous) => [
       { code: selected.code, amount, mode },
       ...previous,
     ]);
     setNotice(
       mode === "sell"
-        ? `Seller quote saved for ${selected.code}. Proposed fee: ${money(amount * 0.1)}; seller proceeds: ${money(amount * 0.9)}. Nothing charged.`
-        : handoff === "success"
-          ? `Quote saved for ${selected.code}. Seller proceeds on successful settlement: ${money(amount * 0.9)} after the 10% fee.`
-          : `Quote saved for ${selected.code}. Failed acquisition terms: full buyer refund, no seller payout or fee.`,
+        ? `Seller quote saved: ${money(amount)} asking price, ${money(amount * 0.1)} fee, ${money(amount * 0.9)} to you on a successful sale.`
+        : `Buyer quote saved for ${selected.code}: ${money(amount)} total. No charge today.`,
     );
     dialog.current?.close();
   }
@@ -228,18 +184,9 @@ export default function Marketplace() {
           className="sell-button"
           onClick={() => openTrade(listings[0], "sell")}
         >
-          Sell a seat <span>↗</span>
+          Price my reservation <span>↗</span>
         </button>
       </header>
-      <div className="ticker" aria-label="Illustrative market prices">
-        <span className="ticker-label">THE TRIP ECONOMY</span>
-        {listings.slice(0, 4).map((item) => (
-          <span key={item.code}>
-            <b>{item.code}</b> {money(item.price)} <em>↗ {item.change}%</em>
-          </span>
-        ))}
-        <span className="ticker-note">ILLUSTRATIVE PRICES</span>
-      </div>
       <main>
         <section className="hero">
           <div className="hero-copy">
@@ -248,83 +195,82 @@ export default function Marketplace() {
               2026
             </p>
             <h1>
-              The trip costs.
+              Buy and sell
               <br />
-              <span>Put AI to work.</span>
+              <span>re:Invent session reservations.</span>
             </h1>
-            <p className="hero-description">
-              Use AI to find in-demand sessions and price your seats.
-              <br />
-              Turn conference demand into a plan to subsidize your trip.
+            <div className="hero-description">
+              <p>
+                <strong>Buying?</strong> Find someone willing to release a
+                reservation for a session you want.
+              </p>
+              <p>
+                <strong>Selling?</strong> Use AI to find and reserve in-demand
+                sessions, then list your reservations to help cover your trip.
+              </p>
+            </div>
+            <p className="hero-footnote">
+              Individual session reservations. Both attendees need their own
+              re:Invent conference pass.
+            </p>
+            <p className="preview-status">
+              <strong>Marketplace preview</strong> · Example listings and a
+              price calculator. Booking and payments aren’t open yet.
             </p>
             <div className="hero-actions">
               <a className="primary" href="#market">
-                Explore the market <span>↗</span>
+                Find a session <span>↗</span>
               </a>
-              <span className="hero-aside">
-                Flights. Hotels. Conference passes.
-                <br />
-                Give your agent a stretch goal.
-              </span>
+              <button
+                className="secondary-action"
+                onClick={() => openTrade(listings[0], "sell")}
+              >
+                Price my reservation ↗
+              </button>
             </div>
-            <p className="hero-footnote">
-              Learn about AI. Put it on the travel budget.
-            </p>
           </div>
           <div className="feature-wrap">
-            <div className="orbit-text">SCARCITY IS A FEATURE. APPARENTLY.</div>
+            <div className="orbit-text">
+              PUT A RESERVATION TOWARD YOUR TRAVEL BILL
+            </div>
             <article className="feature-ticket">
               <div className="ticket-top">
-                <span className="pill">THE MOST VALUABLE PREREQUISITE</span>
+                <span className="pill">EXAMPLE SALE</span>
                 <span>↗</span>
               </div>
-              <p className="ticket-code">AGT101 / FOUNDATIONAL</p>
+              <p className="ticket-code">ONE SESSION RESERVATION</p>
               <h2>
-                Introduction
+                You set the price.
                 <br />
-                to agents.
+                You keep 90%.
               </h2>
-              <p className="ticket-joke">Prerequisite: already owning one.</p>
-              <div className="ticket-chart">
-                <span>ILLUSTRATIVE ASK HISTORY</span>
-                <svg viewBox="0 0 360 95" aria-hidden="true">
-                  <defs>
-                    <linearGradient id="chart-fill" x1="0" x2="0" y1="0" y2="1">
-                      <stop offset="0%" stopColor="#b9f56d" stopOpacity=".32" />
-                      <stop offset="100%" stopColor="#b9f56d" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-                  <path
-                    d="M0 85L25 80L48 83L70 65L100 71L130 48L155 54L179 34L203 41L230 25L255 30L282 12L311 18L338 4L360 7V95H0Z"
-                    fill="url(#chart-fill)"
-                  />
-                  <path
-                    d="M0 85L25 80L48 83L70 65L100 71L130 48L155 54L179 34L203 41L230 25L255 30L282 12L311 18L338 4L360 7"
-                    stroke="#b9f56d"
-                    strokeWidth="2"
-                    fill="none"
-                  />
-                </svg>
-              </div>
-              <div className="ticket-price">
+              <p className="ticket-joke">
+                Here’s the proposed breakdown for a $100 sale.
+              </p>
+              <dl className="sale-example">
                 <div>
-                  <span>ILLUSTRATIVE ASK</span>
-                  <strong>
-                    $420<small> / seat</small>
-                  </strong>
+                  <dt>Buyer pays</dt>
+                  <dd>$100</dd>
                 </div>
-                <span className="positive">↗ 38.2%</span>
-              </div>
-              <button onClick={() => openTrade(listings[0])}>
-                Preview purchase <span>↗</span>
+                <div>
+                  <dt>Service fee · 10%</dt>
+                  <dd>−$10</dd>
+                </div>
+                <div className="seller-net">
+                  <dt>Seller receives</dt>
+                  <dd>$90</dd>
+                </div>
+              </dl>
+              <p className="ticket-joke">
+                Seller payout follows a confirmed buyer reservation. If booking
+                fails, the buyer gets a full refund.
+              </p>
+              <button onClick={() => openTrade(listings[0], "sell")}>
+                Try your own price <span>↗</span>
               </button>
-              <div className="ticket-bottom">
-                <span>PREVIEW INVENTORY</span>
-                <span className="barcode" aria-hidden="true" />
-              </div>
             </article>
             <div className="ticket-caption">
-              <span>01 /</span> The invisible hand has an API key.
+              A successful sale could help cover your trip.
             </div>
           </div>
         </section>
@@ -353,18 +299,18 @@ export default function Marketplace() {
         <section id="how" className="getting-started">
           <p className="eyebrow">START HERE</p>
           <h2>
-            A seat for your schedule.
-            <br />A contribution to your trip.
+            One marketplace.
+            <br />
+            Two ways to use it.
           </h2>
           <p className="section-intro">
-            reAInvent brings buyers and sellers together around in-demand
-            conference sessions. Buyers look for a session they want to attend.
-            Sellers price a reservation they’re willing to give up. AI helps
-            with discovery and planning.
+            The planned marketplace connects attendees who want a session
+            reservation with attendees willing to sell one. Here’s how each side
+            would work.
           </p>
           <div className="journey-grid">
             <article>
-              <span className="eyebrow">I WANT A SEAT</span>
+              <span className="eyebrow">I WANT TO BUY</span>
               <h3>For buyers</h3>
               <ol>
                 <li>
@@ -377,15 +323,17 @@ export default function Marketplace() {
                 <li>
                   <strong>Review the total.</strong>
                   <p>
-                    Choose a price and review the quote before committing.
-                    You’ll need your own re:Invent registration to attend.
+                    Review the seller’s asking price and your total before
+                    committing. You’ll need your own re:Invent registration to
+                    attend.
                   </p>
                 </li>
                 <li>
-                  <strong>Get a confirmed reservation.</strong>
+                  <strong>Attempt the reservation handoff.</strong>
                   <p>
                     The planned handoff releases the seller’s reservation and
-                    attempts to book it for you. Payment would settle only after
+                    attempts to book it for you. The service would hold your
+                    payment during the attempt and pay the seller only after
                     your reservation is confirmed.
                   </p>
                 </li>
@@ -395,30 +343,31 @@ export default function Marketplace() {
               </a>
             </article>
             <article>
-              <span className="eyebrow">I HAVE A SEAT</span>
+              <span className="eyebrow">I WANT TO SELL</span>
               <h3>For sellers</h3>
               <ol>
                 <li>
-                  <strong>Choose a reservation.</strong>
+                  <strong>Find and reserve sessions with AI.</strong>
                   <p>
-                    Start with a session you’ve reserved and are willing to give
-                    up. A favorite or a place on your wish list isn’t a reserved
-                    seat.
+                    Use an assistant to identify sessions people may want and
+                    request reservations through AWS on your own registration.
+                    AI-assisted booking opens October 6.
                   </p>
                 </li>
                 <li>
                   <strong>Set your asking price.</strong>
                   <p>
-                    See what you’d receive after the proposed 10% service fee. A
-                    $100 sale would contribute $90 toward your trip.
+                    Offer a reservation you’ve secured and are willing to
+                    release. The proposed seller fee is 10%: on a $100 sale,
+                    you’d receive $90.
                   </p>
                 </li>
                 <li>
-                  <strong>Complete the handoff.</strong>
+                  <strong>Release when the buyer is ready.</strong>
                   <p>
-                    Under the planned flow, your payout follows confirmation of
-                    the buyer’s reservation. If the buyer doesn’t get the seat,
-                    there’s no payout or service fee.
+                    The planned service coordinates your cancellation with the
+                    buyer’s booking attempt. You’d receive payment only if their
+                    reservation is confirmed.
                   </p>
                 </li>
               </ol>
@@ -426,7 +375,7 @@ export default function Marketplace() {
                 className="primary"
                 onClick={() => openTrade(listings[0], "sell")}
               >
-                Calculate seller proceeds ↗
+                Try the seller calculator ↗
               </button>
             </article>
           </div>
@@ -499,30 +448,14 @@ export default function Marketplace() {
             AWS registration and session details ↗
           </a>
         </section>
-        <section className="availability-panel">
-          <div>
-            <p className="eyebrow">WHAT YOU CAN DO TODAY</p>
-            <h2>Explore now. Plan your next move.</h2>
-            <p>
-              Browse the example listings, star sessions for this visit, and use
-              the quote calculator. Purchases, seller payouts, and reservation
-              handoffs aren’t open yet.
-            </p>
-          </div>
-          <a className="primary" href="#market">
-            Browse the marketplace ↗
-          </a>
-        </section>
         <section id="market" className="market-section">
           <div className="section-heading">
             <div>
-              <p className="eyebrow">
-                THE SECONDARY MARKET FOR FIRST-HAND KNOWLEDGE
-              </p>
-              <h2>Find your edge. Or a chair.</h2>
+              <p className="eyebrow">EXPLORE EXAMPLE LISTINGS</p>
+              <h2>Find a session. See the price.</h2>
             </div>
             <span className="market-badge">
-              <i /> PREVIEW INVENTORY
+              <i /> EXAMPLE LISTINGS
             </span>
           </div>
           <div className="market-layout">
@@ -555,14 +488,14 @@ export default function Marketplace() {
                   value={sort}
                   onChange={(event) => setSort(event.target.value)}
                 >
-                  <option value="trending">Trending first</option>
+                  <option value="topic">Session title: A–Z</option>
                   <option value="low">Price: low to high</option>
                   <option value="high">Price: high to low</option>
                 </select>
               </div>
               <div className="table-heading">
-                <span>SESSION / UNDERLYING OPPORTUNITY</span>
-                <span>ILLUSTRATIVE ASK</span>
+                <span>SESSION</span>
+                <span>ASKING PRICE</span>
               </div>
               <div className="session-list">
                 {visible.map((item) => (
@@ -579,11 +512,6 @@ export default function Marketplace() {
                       <div className="session-meta">
                         <b>{item.code}</b>
                         <span>{item.level}</span>
-                        {item.seats <= 3 && (
-                          <span className="scarce">
-                            {item.seats} SEAT{item.seats === 1 ? "" : "S"}
-                          </span>
-                        )}
                       </div>
                       <h3>
                         <button onClick={() => openTrade(item)}>
@@ -597,19 +525,14 @@ export default function Marketplace() {
                     </div>
                     <div className="price-cell">
                       <strong>{money(item.price)}</strong>
-                      <span
-                        className={item.change < 0 ? "negative" : "positive"}
-                      >
-                        {item.change < 0 ? "↘" : "↗"} {Math.abs(item.change)}%
-                      </span>
+                      <span>per reservation</span>
                     </div>
-                    <Sparkline down={item.change < 0} />
                     <button
                       className="trade"
-                      aria-label={`Trade ${item.code}`}
+                      aria-label={`View quote for ${item.code}`}
                       onClick={() => openTrade(item)}
                     >
-                      Trade ↗
+                      View quote ↗
                     </button>
                   </article>
                 ))}
@@ -622,38 +545,35 @@ export default function Marketplace() {
                 )}
               </div>
               <p className="data-note">
-                All session titles, codes, listings, prices, quantities, and
-                price changes above are invented for this demonstration. They
-                are not AWS catalog records or demand forecasts.
+                Example sessions and prices, not the AWS catalog. Stars and
+                quotes are kept for this visit only.
               </p>
             </div>
             <aside className="market-sidebar">
               <div className="agent-card">
                 <div className="agent-icon">⌘</div>
-                <span className="eyebrow">AUTOMATE YOUR ADVANTAGE</span>
+                <span className="eyebrow">AI FOR SELLERS</span>
                 <h3>
-                  You’re here to learn.
+                  Find demand.
                   <br />
-                  Your agent is here to earn.
+                  Plan reservations.
                 </h3>
                 <p>
-                  See how an assistant could compare sessions and help you plan.
-                  AI-assisted booking through AWS opens October 6.
+                  An AI assistant can help identify sessions to reserve and
+                  offer for sale. AWS’s MCP connection enables AI-assisted
+                  booking from October 6.
                 </p>
                 <button onClick={() => setAgent((value) => !value)}>
-                  {agent ? "Pause agent preview" : "Preview agent mode"}{" "}
+                  {agent ? "Hide the steps" : "See the AI booking steps"}{" "}
                   <span>↗</span>
                 </button>
-                <div className="agent-status">
-                  {agent ? "AGENT PREVIEW" : "NO API CONNECTION REQUIRED"}
-                </div>
                 {agent && (
                   <div className="agent-output">
-                    <p>01 → Scan inventory</p>
-                    <p>02 → Compare example prices</p>
-                    <p>03 → AIM401 leads at $650</p>
+                    <p>1. Compare sessions and likely demand.</p>
+                    <p>2. Sign in to AWS with your Builder ID.</p>
+                    <p>3. Ask your assistant to request reservations.</p>
                     <p className="positive">
-                      04 → Review your options before booking.
+                      4. Check which reservations AWS confirmed.
                     </p>
                   </div>
                 )}
@@ -688,36 +608,44 @@ export default function Marketplace() {
             </aside>
           </div>
         </section>
-        <section id="thesis" className="thesis">
-          <span className="thesis-symbol" aria-hidden="true">
-            ↗
-          </span>
-          <div>
-            <p className="eyebrow">THE FUTURE OF CONFERENCE ACCESS.</p>
-            <h2>
-              You shouldn’t need an agent
-              <br />
-              to get into “Intro to agents.”
-            </h2>
+        <section id="questions" className="getting-started common-questions">
+          <p className="eyebrow">COMMON QUESTIONS</p>
+          <h2>Before you get started.</h2>
+          <details>
+            <summary>Does this include a re:Invent conference pass?</summary>
             <p>
-              A conference should reward curiosity. Automated reservations raise
-              a question: how will people booking manually compete with
-              software? What happens when a seat becomes an asset?
+              No. The marketplace is for reservations to individual sessions.
+              Buyers and sellers each need their own conference registration.
             </p>
+          </details>
+          <details>
+            <summary>
+              Why would I pay for a session that’s included in my pass?
+            </summary>
             <p>
-              The AWS Events API exposes reservation and cancellation
-              operations. Its published interface does not expose a
-              seat-transfer operation. Release-and-reserve requires both steps
-              to succeed.
+              Your pass includes session access, but a reservation for a
+              particular session may be hard to get. The proposed marketplace
+              pays another attendee to release their reservation while
+              attempting to book it for you. You can also look for availability
+              directly through AWS.
             </p>
-            <a
-              href="https://docs.aws.amazon.com/events/latest/devguide/mcp-server.html"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Inspect the documented capabilities ↗
-            </a>
-          </div>
+          </details>
+          <details>
+            <summary>Does October 6 mean reAInvent trading opens?</summary>
+            <p>
+              No. October 6 is the opening date for AI-assisted booking through
+              AWS. reAInvent’s buying and selling launch date hasn’t been
+              announced.
+            </p>
+          </details>
+          <details>
+            <summary>Can I use the calculator without an account?</summary>
+            <p>
+              Yes. Open a quote to see the buyer’s price or calculate seller
+              proceeds. Saved quotes last for this visit and reset when you
+              reload.
+            </p>
+          </details>
         </section>
       </main>
       <footer>
@@ -748,12 +676,12 @@ export default function Marketplace() {
       >
         <button
           className="close-dialog"
-          aria-label="Close trade preview"
+          aria-label="Close quote"
           onClick={() => dialog.current?.close()}
         >
           ×
         </button>
-        <span className="eyebrow">PRICE A SEAT</span>
+        <span className="eyebrow">RESERVATION PRICE CALCULATOR</span>
         <h2 id="trade-title">
           {mode === "buy"
             ? "Review your buyer quote."
@@ -763,8 +691,14 @@ export default function Marketplace() {
           {selected?.code} · {selected?.title}
         </p>
         <div className="mode-tabs">
-          <button aria-pressed={mode === "buy"} onClick={() => setMode("buy")}>
-            Place a bid
+          <button
+            aria-pressed={mode === "buy"}
+            onClick={() => {
+              setMode("buy");
+              setBid(String(selected?.price || 0));
+            }}
+          >
+            Buyer quote
           </button>
           <button
             aria-pressed={mode === "sell"}
@@ -775,7 +709,9 @@ export default function Marketplace() {
         </div>
         <form onSubmit={placeOrder}>
           <label htmlFor="bid">
-            {mode === "buy" ? "Your bid (USD)" : "Asking price (USD)"}
+            {mode === "buy"
+              ? "Seller’s asking price (USD)"
+              : "Asking price (USD)"}
           </label>
           <input
             id="bid"
@@ -785,36 +721,32 @@ export default function Marketplace() {
             step="1"
             required
             value={bid}
+            readOnly={mode === "buy"}
             onChange={(event) => setBid(event.target.value)}
           />
           <div className="order-summary">
-            <span>Sale price</span>
-            <b>{money(Number(bid) || 0)}</b>
-            <span>Proposed service fee · 10%</span>
-            <b>{money((Number(bid) || 0) * 0.1)}</b>
-            <span>Proposed seller proceeds</span>
-            <b>{money((Number(bid) || 0) * 0.9)}</b>
-            <span>Actual amount charged</span>
+            {mode === "buy" ? (
+              <>
+                <span>You would pay</span>
+                <b>{money(Number(bid) || 0)}</b>
+                <span>Buyer fee</span>
+                <b>$0</b>
+              </>
+            ) : (
+              <>
+                <span>Asking price</span>
+                <b>{money(Number(bid) || 0)}</b>
+                <span>Seller fee · 10%</span>
+                <b>−{money((Number(bid) || 0) * 0.1)}</b>
+                <span>You would receive</span>
+                <b>{money((Number(bid) || 0) * 0.9)}</b>
+              </>
+            )}
+            <span>Charged today</span>
             <b>$0</b>
           </div>
-          {mode === "buy" && (
-            <label className="handoff-label">
-              Calculate settlement if
-              <select
-                value={handoff}
-                onChange={(event) =>
-                  setHandoff(event.target.value as "success" | "failure")
-                }
-              >
-                <option value="success">Reservation succeeds</option>
-                <option value="failure">
-                  Reservation fails → full refund model
-                </option>
-              </select>
-            </label>
-          )}
           <div className="escrow-preview">
-            <strong>Escrow model · not activated</strong>
+            <strong>Planned payment and reservation handoff</strong>
             <p>
               The proposed flow holds the buyer’s payment until their
               reservation is confirmed, then pays the seller 90% of the sale
@@ -829,12 +761,7 @@ export default function Marketplace() {
             browser session.
           </p>
           <button className="primary confirm" type="submit">
-            {!user
-              ? "Create an account to continue"
-              : mode === "buy"
-                ? "Save quote"
-                : "Save seller quote"}{" "}
-            ↗
+            Save quote for this visit ↗
           </button>
         </form>
       </dialog>
